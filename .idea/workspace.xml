@@ -3,11 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="fbd451ff-a6cb-4706-a79f-f230996d342d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Ludo/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ludo/Board.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Board.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BoardSquare.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BoardSquare.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Color.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Coordinate2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Coordinate2D.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -40,14 +37,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="3489" />
-          <entry key="txt" value="107" />
+          <entry key="java" value="5098" />
+          <entry key="txt" value="136" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="3489" />
-          <entry key="PLAIN_TEXT" value="107" />
+          <entry key="JAVA" value="5098" />
+          <entry key="PLAIN_TEXT" value="136" />
         </counts>
       </usages-collector>
     </session>
@@ -66,10 +63,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Board.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="347">
-              <caret line="42" column="14" selection-start-line="42" selection-start-column="14" selection-end-line="42" selection-end-column="14" />
+            <state relative-caret-position="318">
+              <caret line="91" column="8" selection-start-line="91" selection-start-column="8" selection-end-line="91" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1072#1085#0" expanded="true" />
+                <element signature="e#1146#1159#0" expanded="true" />
+                <element signature="e#1220#1233#0" expanded="true" />
+                <element signature="e#1294#1307#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -87,8 +88,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/BoardSquare.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+            <state relative-caret-position="68">
+              <caret line="4" column="40" selection-start-line="4" selection-start-column="40" selection-end-line="4" selection-end-column="40" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -152,7 +156,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="path&#9;ACTION&#9;FindInPath" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1541033031779" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1541035469157" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -202,7 +206,14 @@
       <option name="project" value="LOCAL" />
       <updated>1541030974931</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Drawing sanctuary squares.">
+      <created>1541033070246</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1541033070246</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -218,8 +229,8 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32871974" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32871974" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39907727" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -272,7 +283,8 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Adding skeleton for a few classes. Opening the path for drawing the gameBoard." />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding skeleton for a few classes. Opening the path for drawing the gameBoard." />
+    <MESSAGE value="Drawing sanctuary squares." />
+    <option name="LAST_COMMIT_MESSAGE" value="Drawing sanctuary squares." />
   </component>
   <component name="editorHistoryManager">
     <entry file="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/rt.jar!/java/awt/Window.class">
@@ -305,8 +317,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BoardSquare.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+        <state relative-caret-position="68">
+          <caret line="4" column="40" selection-start-line="4" selection-start-column="40" selection-end-line="4" selection-end-column="40" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -319,10 +334,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Board.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="42" column="14" selection-start-line="42" selection-start-column="14" selection-end-line="42" selection-end-column="14" />
+        <state relative-caret-position="318">
+          <caret line="91" column="8" selection-start-line="91" selection-start-column="8" selection-end-line="91" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1072#1085#0" expanded="true" />
+            <element signature="e#1146#1159#0" expanded="true" />
+            <element signature="e#1220#1233#0" expanded="true" />
+            <element signature="e#1294#1307#0" expanded="true" />
           </folding>
         </state>
       </provider>
