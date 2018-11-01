@@ -48,7 +48,7 @@ public class Board extends JFrame {
         }
 
 
-        g2D.setStroke(new BasicStroke(1) );
+        g2D.setStroke(new BasicStroke(2) );
 
         for(BoardSquare b : redSquares) {
             int x = b.topLeftPosition.x;
