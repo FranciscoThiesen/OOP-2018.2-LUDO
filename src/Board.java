@@ -47,6 +47,14 @@ public class Board extends JFrame {
             yellowSquares.add( new BoardSquare(new Coordinate2D(560 - ( ( i + 1) * 40), 280), 40, Color.YELLOW) );
         }
 
+        // approach diferente
+        g2D.setStroke(new BasicStroke(1) );
+        g2D.setColor(Color.BLACK);
+        for(int i = 0; i < 15; i++) {
+            for(int j = 0; j < 15; j++) {
+                g2D.drawRect(i * 40, j * 40, 40, 40);
+            }
+        }
 
         g2D.setStroke(new BasicStroke(2) );
 
