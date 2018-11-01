@@ -1,9 +1,11 @@
+import java.awt.*;
+
 public class BoardSquare {
     public Coordinate2D topLeftPosition;
-    public double sideLength;
+    public int sideLength;
     public Color squareColor;
 
-    public BoardSquare(Coordinate2D x, double y, Color c) {
+    public BoardSquare(Coordinate2D x, int y, Color c) {
         this.topLeftPosition = x;
         this.sideLength = y;
         this.squareColor = c;
