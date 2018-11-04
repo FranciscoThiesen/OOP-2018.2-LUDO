@@ -1,7 +1,7 @@
-public class Coordinate2D {
+public class Vector2D {
     public int x, y;
 
-    public Coordinate2D(int v1, int v2) {
+    public Vector2D(int v1, int v2) {
         this.x = v1;
         this.y = v2;
     }

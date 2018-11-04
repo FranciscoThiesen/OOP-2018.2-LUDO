@@ -6,6 +6,8 @@ public class Die {
 	private int value;
 	private boolean _hasBeenUsed;
 	
+	public Subject<Integer> onRoll;
+	
 	public Die() {
 		this._hasBeenUsed = false;
 		this.value = 1;
@@ -15,6 +17,7 @@ public class Die {
 	public void roll() {
 		this._hasBeenUsed = false;
 		this.value = this.rng.nextInt(6) + 1;  // [0,6) + 1 = [1,7) = [1,6], uniformely distributed
+		this.onRoll.notifyAllObservers(this.value);
 	}
 	
 	public int getValue() {

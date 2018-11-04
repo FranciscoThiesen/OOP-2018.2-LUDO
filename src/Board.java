@@ -29,21 +29,21 @@ public class Board extends JFrame {
         ArrayList<BoardSquare> greenSquares = new ArrayList<BoardSquare>();
         ArrayList<BoardSquare> yellowSquares = new ArrayList<BoardSquare>();
 
-        redSquares.add( new BoardSquare(new Coordinate2D(0, 0), 240, Color.RED ) );
-        blueSquares.add( new BoardSquare(new Coordinate2D(0, 360), 240, Color.BLUE ) );
-        greenSquares.add( new BoardSquare(new Coordinate2D(360, 0), 240, Color.GREEN ) );
-        yellowSquares.add( new BoardSquare(new Coordinate2D(360, 360), 240, Color.YELLOW) );
+        redSquares.add( new BoardSquare(new Vector2D(0, 0), 240, Color.RED ) );
+        blueSquares.add( new BoardSquare(new Vector2D(0, 360), 240, Color.BLUE ) );
+        greenSquares.add( new BoardSquare(new Vector2D(360, 0), 240, Color.GREEN ) );
+        yellowSquares.add( new BoardSquare(new Vector2D(360, 360), 240, Color.YELLOW) );
 
-        redSquares.add( new BoardSquare(new Coordinate2D(40, 240), 40, Color.RED) );
-        blueSquares.add( new BoardSquare(new Coordinate2D(240, 520), 40, Color.BLUE) );
-        greenSquares.add( new BoardSquare(new Coordinate2D(320, 40), 40, Color.GREEN) );
-        yellowSquares.add( new BoardSquare(new Coordinate2D(520, 320), 40, Color.YELLOW) );
+        redSquares.add( new BoardSquare(new Vector2D(40, 240), 40, Color.RED) );
+        blueSquares.add( new BoardSquare(new Vector2D(240, 520), 40, Color.BLUE) );
+        greenSquares.add( new BoardSquare(new Vector2D(320, 40), 40, Color.GREEN) );
+        yellowSquares.add( new BoardSquare(new Vector2D(520, 320), 40, Color.YELLOW) );
 
         for(int i = 0; i < 5; i++) {
-            redSquares.add( new BoardSquare(new Coordinate2D((i + 1) * 40, 280), 40, Color.RED) );
-            blueSquares.add( new BoardSquare(new Coordinate2D(280, 560 - ( (i + 1) * 40) ), 40, Color.BLUE) );
-            greenSquares.add( new BoardSquare(new Coordinate2D(280, (i + 1) * 40), 40, Color.GREEN) );
-            yellowSquares.add( new BoardSquare(new Coordinate2D(560 - ( ( i + 1) * 40), 280), 40, Color.YELLOW) );
+            redSquares.add( new BoardSquare(new Vector2D((i + 1) * 40, 280), 40, Color.RED) );
+            blueSquares.add( new BoardSquare(new Vector2D(280, 560 - ( (i + 1) * 40) ), 40, Color.BLUE) );
+            greenSquares.add( new BoardSquare(new Vector2D(280, (i + 1) * 40), 40, Color.GREEN) );
+            yellowSquares.add( new BoardSquare(new Vector2D(560 - ( ( i + 1) * 40), 280), 40, Color.YELLOW) );
         }
 
         // approach diferente
