@@ -11,6 +11,7 @@ public class Ludo {
 	public Ludo() {
 		this.board = new Board();
 		this.dice = new Dice();
+		this.players = new Vector<Player>();
 		this.players.add(new Player(Color.RED));
 		this.players.add(new Player(Color.GREEN));
 		this.players.add(new Player(Color.BLUE));

@@ -9,5 +9,7 @@ public class Player {
 	
 	public Player(Color c) {
 		this.color = c;
+		this.pieces = new Vector<Piece>();
+		this.piecePath = new Vector<BoardSquare>();
 	}
 }
