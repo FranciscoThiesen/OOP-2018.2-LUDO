@@ -2,7 +2,7 @@ public class Dice {
 	private Die first;
 	private Die second;
 
-	Dice() {
+	public Dice() {
 		this.first = new Die();
 		this.second = new Die();
 	}

@@ -3,7 +3,7 @@ public class Ludo {
 	private Board board;
 	private Dice dice;
 	
-	Ludo() {
+	public Ludo() {
 		this.board = new Board();
 		this.dice = new Dice();
 	}

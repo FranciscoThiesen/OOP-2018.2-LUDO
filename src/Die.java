@@ -6,7 +6,7 @@ public class Die {
 	private int value;
 	private boolean _hasBeenUsed;
 	
-	Die() {
+	public Die() {
 		this._hasBeenUsed = false;
 		this.value = 1;
 		this.rng = new Random();
