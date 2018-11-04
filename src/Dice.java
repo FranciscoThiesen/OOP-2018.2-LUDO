@@ -1,53 +1,38 @@
-import java.util.Random;
-
 public class Dice {
-	private boolean _hasUsedFirst;
-	private boolean _hasUsedSecond;
-	
-	private int firstDie;
-	private int secondDie;
-	
+	private Die first;
+	private Die second;
 
-	private Random rng;
-	
 	Dice() {
-		this._hasUsedFirst = false;
-		this._hasUsedSecond = false;
-		this.firstDie = 1;
-		this.secondDie = 1;
-		this.rng = new Random();
+		this.first = new Die();
+		this.second = new Die();
 	}
 	
 	public void roll() {
-		this._hasUsedFirst = false;
-		this._hasUsedSecond = false;
-		this.firstDie = this.rng.nextInt(6) + 1; // [0,6) + 1 = [1,7) = [1,6], uniformely distributed
-		this.secondDie = this.rng.nextInt(6) + 1;
+		this.first.roll();
+		this.second.roll();
 	}
 	
 	public int getFirst() {
-		return firstDie;
+		return this.first.getValue();
 	}
 	
 	public int getSecond() {
-		return secondDie;
+		return this.second.getValue();
 	}
 	
 	public boolean hasUsedFirst() {
-		return _hasUsedFirst;
+		return this.first.hasBeenUsed();
 	}
 	
 	public boolean hasUsedSecond() {
-		return _hasUsedSecond;
+		return this.second.hasBeenUsed();
 	}
 	
 	public int useFirst() {
-		this._hasUsedFirst = true;
-		return this.firstDie;
+		return this.first.use();
 	}
 	
 	public int useSecond() {
-		this._hasUsedSecond = true;
-		return this.secondDie;
+		return this.second.use();
 	}
 }

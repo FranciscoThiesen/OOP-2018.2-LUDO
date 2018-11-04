@@ -1,12 +1,11 @@
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import javax.swing.*;
-import javax.tools.Tool;
 import java.util.*;
 
 public class Board extends JFrame {
 
-    public static final int DEFAULT_WIDTH  = 600;
+	private static final long serialVersionUID = -3395052687382008316L;
+	public static final int DEFAULT_WIDTH  = 600;
     public static final int DEFAULT_HEIGHT = 840;
 
     public Board() {
