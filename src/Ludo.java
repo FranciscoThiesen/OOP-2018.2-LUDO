@@ -1,6 +1,14 @@
 public class Ludo {
-    public static void main( String[] args) {
-        Board b = new Board();
-        b.setVisible(true);
+	
+	private Board board;
+	private Dice dice;
+	
+	Ludo() {
+		this.board = new Board();
+		this.dice = new Dice();
+	}
+	
+    public void run() {
+        this.board.setVisible(true);
     }
 }
