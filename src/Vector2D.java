@@ -5,4 +5,12 @@ public class Vector2D {
         this.x = v1;
         this.y = v2;
     }
+    
+    public Vector2D subtract(Vector2D other) {
+    	return new Vector2D(this.x - other.x, this.y - other.y);
+    }
+    
+    public float len2() {
+    	return (this.x * this.x) + (this.y * this.y);
+    }
 }

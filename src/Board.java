@@ -9,6 +9,10 @@ public class Board extends JFrame implements MouseListener {
 	private static final long serialVersionUID = -3395052687382008316L;
 	public static final int DEFAULT_WIDTH  = 600;
     public static final int DEFAULT_HEIGHT = 840;
+    
+    private Vector2D piecePosition = new Vector2D(300, 300);
+    private int radius = 50;
+    private boolean isPieceSelected = false;
 
     public Board() {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -52,9 +56,11 @@ public class Board extends JFrame implements MouseListener {
 
         // approach diferente
         g2D.setStroke(new BasicStroke(1) );
-        g2D.setColor(Color.BLACK);
         for(int i = 0; i < 15; i++) {
             for(int j = 0; j < 15; j++) {
+                g2D.setColor(Color.WHITE);
+                g2D.fillRect(i * 40, j * 40, 40, 40);
+                g2D.setColor(Color.BLACK);
                 g2D.drawRect(i * 40, j * 40, 40, 40);
             }
         }
@@ -100,14 +106,35 @@ public class Board extends JFrame implements MouseListener {
             g2D.setColor(Color.YELLOW);
             g2D.fillRect(x, y, len, len);
         }
-
+        
+        // draw piece
+        g2D.setColor(Color.BLACK);
+        g2D.drawOval(this.piecePosition.x, this.piecePosition.y, this.radius, this.radius);
+		if(this.isPieceSelected) {
+	        g2D.setColor(Color.PINK);
+		} else {
+	        g2D.setColor(Color.CYAN);
+		}
+        g2D.fillOval(this.piecePosition.x, this.piecePosition.y, this.radius, this.radius);
     }
     
     @Override
     public void mouseClicked(MouseEvent e) {
     	int x = e.getX();
 		int y = e.getY();
+		Vector2D mousePos = new Vector2D(x, y);
 		System.out.println("Mouse Clicked at X: " + x + " - Y: " + y);
+		
+		if(this.isPieceSelected) {
+			this.isPieceSelected = false;
+			this.piecePosition = new Vector2D(x, y);
+		} else if(mousePos.subtract(this.piecePosition).len2() < this.radius * this.radius) {
+			System.out.println("inside");
+			this.isPieceSelected = true;
+		} else {
+			System.out.println("out");
+		}
+		this.repaint();
     }
 
 	@Override
