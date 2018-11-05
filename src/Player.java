@@ -10,6 +10,10 @@ public class Player {
 	public Player(Color c) {
 		this.color = c;
 		this.pieces = new Vector<Piece>();
+		this.pieces.add(new Piece(this));
+		this.pieces.add(new Piece(this));
+		this.pieces.add(new Piece(this));
+		this.pieces.add(new Piece(this));
 		this.piecePath = new Vector<BoardSquare>();
 	}
 }

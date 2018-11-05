@@ -1,8 +1,10 @@
 import java.awt.*;
+import java.awt.event.*;
+
 import javax.swing.*;
 import java.util.*;
 
-public class Board extends JFrame {
+public class Board extends JFrame implements MouseListener {
 
 	private static final long serialVersionUID = -3395052687382008316L;
 	public static final int DEFAULT_WIDTH  = 600;
@@ -19,6 +21,8 @@ public class Board extends JFrame {
         setBounds(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
+        this.addMouseListener(this);
+
     }
 
     public void paint(Graphics g) {
@@ -98,5 +102,37 @@ public class Board extends JFrame {
         }
 
     }
+    
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    	int x = e.getX();
+		int y = e.getY();
+		System.out.println("Mouse Clicked at X: " + x + " - Y: " + y);
+    }
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }
