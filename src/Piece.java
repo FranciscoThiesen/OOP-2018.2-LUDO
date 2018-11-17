@@ -1,14 +1,30 @@
+import java.util.*;
+import java.math.*;
+
 public class Piece {
 	private Player player;
 	private int pathIndex;
-	
-	public Piece(Player player) {
+	private Vector<Integer> pieceTrack;
+
+	public Piece(Player player, Vector<Integer> track) {
 		this.player = player;
 		this.pathIndex = 0;
+		this.pieceTrack = track;
 	}
-	
-	public void advance(int numMoves) {
-		
+
+	public int getPathIndex()
+	{
+		return this.pathIndex;
+	}
+
+	public Vector<Integer> getPieceTrack()
+	{
+		return this.pieceTrack;
+	}
+
+	public void advance(int numMoves)
+	{
+
 	}
 	
 	

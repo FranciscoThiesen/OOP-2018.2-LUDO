@@ -1,5 +1,7 @@
 import java.awt.Color;
+import java.lang.reflect.Array;
 import java.util.Vector;
+import java.util.ArrayList;
 
 public class Ludo {
 	
@@ -12,10 +14,10 @@ public class Ludo {
 		this.board = new Board();
 		this.dice = new Dice();
 		this.players = new Vector<Player>();
-		this.players.add(new Player(Color.RED));
-		this.players.add(new Player(Color.GREEN));
-		this.players.add(new Player(Color.BLUE));
-		this.players.add(new Player(Color.YELLOW));
+		this.players.add(new Player(Color.RED, board.redPiecesTracks));
+		this.players.add(new Player(Color.GREEN, board.greenPiecesTracks));
+		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks));
+		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks));
 		this.currentPlayerIndex = 0;
 	}
 	
@@ -44,7 +46,23 @@ public class Ludo {
         this.dice.roll();
         System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
         System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
-        
 
     }
+
+    public ArrayList<Piece> getAllPiecesOnASquare( int targetSquareIndex )
+	{
+		ArrayList<Piece> pecasNoQuadrado = new ArrayList<Piece>();
+		for( Player x : players)
+		{
+			Vector<Piece> pieceVector = x.getPieces();
+			for( Piece p : pieceVector)
+			{
+				Vector<Integer> track = p.getPieceTrack();
+				int trackIndex = p.getPathIndex();
+				Integer b = track.get(trackIndex);
+				pecasNoQuadrado.add( p );
+			}
+		}
+		return pecasNoQuadrado;
+	}
 }

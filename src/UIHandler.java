@@ -33,8 +33,6 @@ public class UIHandler extends JFrame implements MouseListener  {
 
     public void paint(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
-        
-        Graphics2D g2D = (Graphics2D) g;
 
         ArrayList<BoardSquare> redSquares = new ArrayList<BoardSquare>();
         ArrayList<BoardSquare> blueSquares = new ArrayList<BoardSquare>();
