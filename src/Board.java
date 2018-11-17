@@ -12,7 +12,7 @@ public class Board {
     public Vector<Vector<Integer>> greenPiecesTracks;
     public Vector<Vector<Integer>> yellowPiecesTracks;
     public Vector<Vector<Integer>> bluePiecesTracks;
-    
+    public int trackLength;
     private int squareSideLength = 40;
     
     private Vector<Integer> buildVectorWithIntervalIncluding(int x, int y) {
@@ -116,12 +116,15 @@ public class Board {
         for(int i=0; i<92; i++) {
         	this.squares.get(i).setColor(Color.WHITE);
         }
-        
+
+        // Every track has the same length, I have just chosen a random one
+        this.trackLength = this.bluePiecesTracks.get(0).size();
+
         this.colorVectorWithColor(redFinalPart, Color.RED);
         this.colorVectorWithColor(greenFinalPart, Color.GREEN);
         this.colorVectorWithColor(yellowFinalPart, Color.YELLOW);
         this.colorVectorWithColor(blueFinalPart, Color.BLUE);
-        
+
         this.squares.get(redLeg.get(0)).setColor(Color.RED);
         this.squares.get(greenLeg.get(0)).setColor(Color.GREEN);
         this.squares.get(yellowLeg.get(0)).setColor(Color.YELLOW);
