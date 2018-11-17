@@ -19,7 +19,32 @@ public class Ludo {
 		this.currentPlayerIndex = 0;
 	}
 	
-    public void run() {
-        this.board.setVisible(true);
+    public void run() {        
+        System.out.print("Rolando os dados...\n");
+        this.dice.roll();
+        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
+        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
+        
+        System.out.print("Rolando os dados...\n");
+        this.dice.roll();
+        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
+        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
+        
+        System.out.print("Rolando os dados...\n");
+        this.dice.roll();
+        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
+        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
+        
+        System.out.print("Rolando os dados...\n");
+        this.dice.roll();
+        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
+        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
+        
+        System.out.print("Rolando os dados...\n");
+        this.dice.roll();
+        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
+        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
+        
+
     }
 }

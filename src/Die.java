@@ -12,6 +12,7 @@ public class Die {
 		this._hasBeenUsed = false;
 		this.value = 1;
 		this.rng = new Random();
+		this.onRoll = new Subject<Integer>();
 	}
 	
 	public void roll() {

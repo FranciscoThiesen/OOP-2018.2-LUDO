@@ -1,165 +1,105 @@
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
 import java.util.*;
 
-public class Board extends JFrame implements MouseListener {
+public class Board {
 
-	private static final long serialVersionUID = -3395052687382008316L;
-	public static final int DEFAULT_WIDTH  = 600;
-    public static final int DEFAULT_HEIGHT = 840;
+    public Vector<BoardSquare> squares;
     
-    private Vector2D piecePosition = new Vector2D(300, 300);
-    private int radius = 50;
-    private boolean isPieceSelected = false;
+    public Vector<Vector<Integer>> redPiecesTracks;
+    public Vector<Vector<Integer>> greenPiecesTracks;
+    public Vector<Vector<Integer>> yellowPiecesTracks;
+    public Vector<Vector<Integer>> bluePiecesTracks;
+    
+    private int squareSideLength = 40;
+    
+    private Vector<Integer> buildVectorWithIntervalIncluding(int x, int y) {
+    	Vector<Integer> v = new Vector<Integer>();
+    	for(int i=x; i<=y; i++) {
+    		v.add(i);
+    	}
+    	return v;
+    }
+    
+    private Vector<Integer> buildPieceTrack(	int startingIndex,
+    											Vector<Integer> leg0,
+    											Vector<Integer> leg1, 
+    											Vector<Integer> leg2, 
+    											Vector<Integer> leg3,
+    											Vector<Integer> finalTrack,
+    											int finalSquareIndex) {
+    	Vector<Integer> track = new Vector<Integer>();
+    	track.add(startingIndex);
+    	track.addAll(leg0);
+    	track.addAll(leg1);
+    	track.addAll(leg2);
+    	track.addAll(leg3);
+    	track.addAll(finalTrack);
+    	track.add(finalSquareIndex);
+    	return track;
+    }
+    
+    private void buildSquaresAndTracks() {
+        this.squares = new Vector<BoardSquare>();
+        for(int i=0; i<92; i++) {
+        	this.squares.add(new BoardSquare());
+        }
+        Vector<Integer> redLeg = this.buildVectorWithIntervalIncluding(16, 28);
+        Vector<Integer> greenLeg = this.buildVectorWithIntervalIncluding(29, 41);
+        Vector<Integer> yellowLeg = this.buildVectorWithIntervalIncluding(42, 54);
+        Vector<Integer> blueLeg = this.buildVectorWithIntervalIncluding(55, 67);
+        
+        Vector<Integer> redFinalPart = this.buildVectorWithIntervalIncluding(68, 72);
+        Vector<Integer> greenFinalPart = this.buildVectorWithIntervalIncluding(73, 77);
+        Vector<Integer> yellowFinalPart = this.buildVectorWithIntervalIncluding(78, 82);
+        Vector<Integer> blueFinalPart = this.buildVectorWithIntervalIncluding(83, 87);
+        
+        this.redPiecesTracks.add(this.buildPieceTrack(0, redLeg, greenLeg, yellowLeg, blueLeg, redFinalPart, 88));
+        this.redPiecesTracks.add(this.buildPieceTrack(1, redLeg, greenLeg, yellowLeg, blueLeg, redFinalPart, 88));
+        this.redPiecesTracks.add(this.buildPieceTrack(2, redLeg, greenLeg, yellowLeg, blueLeg, redFinalPart, 88));
+        this.redPiecesTracks.add(this.buildPieceTrack(3, redLeg, greenLeg, yellowLeg, blueLeg, redFinalPart, 88));
+        
+        this.greenPiecesTracks.add(this.buildPieceTrack(4, greenLeg, yellowLeg, blueLeg, redLeg, greenFinalPart, 89));
+        this.greenPiecesTracks.add(this.buildPieceTrack(5, greenLeg, yellowLeg, blueLeg, redLeg, greenFinalPart, 89));
+        this.greenPiecesTracks.add(this.buildPieceTrack(6, greenLeg, yellowLeg, blueLeg, redLeg, greenFinalPart, 89));
+        this.greenPiecesTracks.add(this.buildPieceTrack(7, greenLeg, yellowLeg, blueLeg, redLeg, greenFinalPart, 89));
+        
+        this.yellowPiecesTracks.add(this.buildPieceTrack(12, yellowLeg, blueLeg, redLeg, greenLeg, yellowFinalPart, 90));
+        this.yellowPiecesTracks.add(this.buildPieceTrack(13, yellowLeg, blueLeg, redLeg, greenLeg, yellowFinalPart, 90));
+        this.yellowPiecesTracks.add(this.buildPieceTrack(14, yellowLeg, blueLeg, redLeg, greenLeg, yellowFinalPart, 90));
+        this.yellowPiecesTracks.add(this.buildPieceTrack(15, yellowLeg, blueLeg, redLeg, greenLeg, yellowFinalPart, 90));
+        
+        this.bluePiecesTracks.add(this.buildPieceTrack(8, blueLeg, redLeg, greenLeg, yellowLeg, blueFinalPart, 91));
+        this.bluePiecesTracks.add(this.buildPieceTrack(9, blueLeg, redLeg, greenLeg, yellowLeg, blueFinalPart, 91));
+        this.bluePiecesTracks.add(this.buildPieceTrack(10, blueLeg, redLeg, greenLeg, yellowLeg, blueFinalPart, 91));
+        this.bluePiecesTracks.add(this.buildPieceTrack(11, blueLeg, redLeg, greenLeg, yellowLeg, blueFinalPart, 91));
+        
+        int[][] boardPositions = {	{-1, -1, -1, -1, -1, -1, 26, 27, 28, -1, -1, -1, -1, -1, -1},
+        							{-1,  0, -1, -1,  1, -1, 25, 73, 29, -1,  4, -1, -1,  5, -1},
+        							{-1, -1, -1, -1,  1, -1, 24, 74, 30, -1, -1, -1, -1, -1, -1},
+        							{-1, -1, -1, -1,  1, -1, 23, 75, 31, -1, -1, -1, -1, -1, -1},
+        							{-1,  2, -1, -1,  3, -1, 22, 76, 32, -1,  6, -1, -1,  7, -1},
+        							{-1, -1, -1, -1,  1, -1, 21, 77, 33, -1, -1, -1, -1, -1, -1},
+        							{67, 16, 17, 18, 19, 20, -1, 89, -1, 34, 35, 36, 37, 38, 39},
+        							{66, 68, 69, 70, 71, 72, 88, -1, 90, 82, 81, 80, 79, 78, 40},
+        							{65, 64, 63, 62, 61, 60, -1, 91, -1, 46, 45, 44, 43, 42, 41},
+        							{-1, -1, -1, -1,  1, -1, 59, 87, 47, -1, -1, -1, -1, -1, -1},
+        							{-1,  8, -1, -1,  9, -1, 58, 86, 48, -1, 12, -1, -1, 13, -1},
+        							{-1, -1, -1, -1, -1, -1, 57, 85, 49, -1, -1, -1, -1, -1, -1},
+        							{-1, -1, -1, -1, -1, -1, 56, 84, 50, -1, -1, -1, -1, -1, -1},
+        							{-1, 10, -1, -1, 11, -1, 55, 83, 51, -1, 14, -1, -1, 15, -1},
+        							{-1, -1, -1, -1, -1, -1, 54, 53, 52, -1, -1, -1, -1, -1, -1}};
+        
+        for(int y=0; y<15; y++) {
+        	for(int x=0; x<15; x++) {
+        		if(boardPositions[y][x] != -1) {
+            		this.squares.get(boardPositions[y][x]).setPosition(new Vector2D(y * squareSideLength, x * squareSideLength));
+            		this.squares.get(boardPositions[y][x]).setSideLength(this.squareSideLength);
+        		}
+        	}
+        }
+    }
 
     public Board() {
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = toolkit.getScreenSize();
-        int screenWidth = screenSize.width;
-        int screenHeight = screenSize.height;
-        int x = screenWidth / 2 - DEFAULT_WIDTH / 2;
-        int y = screenHeight / 2 - DEFAULT_HEIGHT / 2;
-
-        setBounds(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
-        this.addMouseListener(this);
-
+    	this.buildSquaresAndTracks();
     }
-
-    public void paint(Graphics g) {
-        Graphics2D g2D = (Graphics2D) g;
-
-        ArrayList<BoardSquare> redSquares = new ArrayList<BoardSquare>();
-        ArrayList<BoardSquare> blueSquares = new ArrayList<BoardSquare>();
-        ArrayList<BoardSquare> greenSquares = new ArrayList<BoardSquare>();
-        ArrayList<BoardSquare> yellowSquares = new ArrayList<BoardSquare>();
-
-        redSquares.add( new BoardSquare(new Vector2D(0, 0), 240, Color.RED ) );
-        blueSquares.add( new BoardSquare(new Vector2D(0, 360), 240, Color.BLUE ) );
-        greenSquares.add( new BoardSquare(new Vector2D(360, 0), 240, Color.GREEN ) );
-        yellowSquares.add( new BoardSquare(new Vector2D(360, 360), 240, Color.YELLOW) );
-
-        redSquares.add( new BoardSquare(new Vector2D(40, 240), 40, Color.RED) );
-        blueSquares.add( new BoardSquare(new Vector2D(240, 520), 40, Color.BLUE) );
-        greenSquares.add( new BoardSquare(new Vector2D(320, 40), 40, Color.GREEN) );
-        yellowSquares.add( new BoardSquare(new Vector2D(520, 320), 40, Color.YELLOW) );
-
-        for(int i = 0; i < 5; i++) {
-            redSquares.add( new BoardSquare(new Vector2D((i + 1) * 40, 280), 40, Color.RED) );
-            blueSquares.add( new BoardSquare(new Vector2D(280, 560 - ( (i + 1) * 40) ), 40, Color.BLUE) );
-            greenSquares.add( new BoardSquare(new Vector2D(280, (i + 1) * 40), 40, Color.GREEN) );
-            yellowSquares.add( new BoardSquare(new Vector2D(560 - ( ( i + 1) * 40), 280), 40, Color.YELLOW) );
-        }
-
-        // approach diferente
-        g2D.setStroke(new BasicStroke(1) );
-        for(int i = 0; i < 15; i++) {
-            for(int j = 0; j < 15; j++) {
-                g2D.setColor(Color.WHITE);
-                g2D.fillRect(i * 40, j * 40, 40, 40);
-                g2D.setColor(Color.BLACK);
-                g2D.drawRect(i * 40, j * 40, 40, 40);
-            }
-        }
-
-        g2D.setStroke(new BasicStroke(2) );
-
-        for(BoardSquare b : redSquares) {
-            int x = b.topLeftPosition.x;
-            int y = b.topLeftPosition.y;
-            int len = b.sideLength;
-            g2D.setColor(Color.BLACK);
-            g2D.drawRect(x, y, len, len);
-            g2D.setColor(Color.RED);
-            g2D.fillRect(x, y, len, len);
-        }
-
-        for(BoardSquare b : blueSquares) {
-            int x = b.topLeftPosition.x;
-            int y = b.topLeftPosition.y;
-            int len = b.sideLength;
-            g2D.setColor(Color.BLACK);
-            g2D.drawRect(x, y, len, len);
-            g2D.setColor(Color.BLUE);
-            g2D.fillRect(x, y, len, len);
-        }
-
-        for(BoardSquare b : greenSquares) {
-            int x = b.topLeftPosition.x;
-            int y = b.topLeftPosition.y;
-            int len = b.sideLength;
-            g2D.setColor(Color.BLACK);
-            g2D.drawRect(x, y, len, len);
-            g2D.setColor(Color.GREEN);
-            g2D.fillRect(x, y, len, len);
-        }
-
-        for(BoardSquare b : yellowSquares) {
-            int x = b.topLeftPosition.x;
-            int y = b.topLeftPosition.y;
-            int len = b.sideLength;
-            g2D.setColor(Color.BLACK);
-            g2D.drawRect(x, y, len, len);
-            g2D.setColor(Color.YELLOW);
-            g2D.fillRect(x, y, len, len);
-        }
-        
-        // draw piece
-        g2D.setColor(Color.BLACK);
-        g2D.drawOval(this.piecePosition.x, this.piecePosition.y, this.radius, this.radius);
-		if(this.isPieceSelected) {
-	        g2D.setColor(Color.PINK);
-		} else {
-	        g2D.setColor(Color.CYAN);
-		}
-        g2D.fillOval(this.piecePosition.x, this.piecePosition.y, this.radius, this.radius);
-    }
-    
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    	int x = e.getX();
-		int y = e.getY();
-		Vector2D mousePos = new Vector2D(x, y);
-		System.out.println("Mouse Clicked at X: " + x + " - Y: " + y);
-		
-		if(this.isPieceSelected) {
-			this.isPieceSelected = false;
-			this.piecePosition = new Vector2D(x, y);
-		} else if(mousePos.subtract(this.piecePosition).len2() < this.radius * this.radius) {
-			System.out.println("inside");
-			this.isPieceSelected = true;
-		} else {
-			System.out.println("out");
-		}
-		this.repaint();
-    }
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 }
