@@ -52,6 +52,7 @@ public class UIControlsPanel extends JPanel {
 	}
 	
 	public void onClickTurnButton() {
+		this.nextTurnButton.setEnabled(false);
 		this.onNextTurnButtonClick.notifyAllObservers();
 	}
 	
@@ -66,6 +67,10 @@ public class UIControlsPanel extends JPanel {
 	
     public void changePlayer(Player player) {
     	this.setCurrentPlayer(player.getName());
+    }
+    
+    public void allowEndTurn() {
+		this.nextTurnButton.setEnabled(true);
     }
 
 }

@@ -12,6 +12,7 @@ public class Ludo {
 
 	public Subject<Player> onPlayerChange = new Subject<Player>();
 	public Subject<Pair<Integer, Integer>> onDiceRoll = new Subject<Pair<Integer, Integer>>();
+	public SubjectVoid onTurnComplete = new SubjectVoid();
 	
 	public Ludo() {
 		this.board = new Board();
@@ -41,6 +42,7 @@ public class Ludo {
         this.dice.roll();
         Pair<Integer, Integer> notification = new Pair<Integer, Integer>(this.dice.getFirst(), this.dice.getSecond());
         this.onDiceRoll.notifyAllObservers(notification);
+        this.onTurnComplete.notifyAllObservers();
 	}
 	
     public void run() {        
