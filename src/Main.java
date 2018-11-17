@@ -6,6 +6,7 @@ public class Main {
     	uiHandler.setVisible(true);
     	
     	ludo.onPlayerChange.attach((Player player) -> {uiHandler.changePlayer(player);});
+    	ludo.onDiceRoll.attach((Pair<Integer, Integer> result) -> {uiHandler.onDiceRoll(result);});
     	uiHandler.onDiceRollButtonClick.attach(() -> {ludo.rollDice();});
     	uiHandler.onNextTurnButtonClick.attach(() -> {ludo.nextPlayer();});
     	

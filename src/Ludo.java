@@ -11,6 +11,7 @@ public class Ludo {
 	private int currentPlayerIndex;
 
 	public Subject<Player> onPlayerChange = new Subject<Player>();
+	public Subject<Pair<Integer, Integer>> onDiceRoll = new Subject<Pair<Integer, Integer>>();
 	
 	public Ludo() {
 		this.board = new Board();
@@ -37,10 +38,9 @@ public class Ludo {
 	}
 	
 	public void rollDice() {
-        System.out.print("Rolando os dados...\n");
         this.dice.roll();
-        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
-        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
+        Pair<Integer, Integer> notification = new Pair<Integer, Integer>(this.dice.getFirst(), this.dice.getSecond());
+        this.onDiceRoll.notifyAllObservers(notification);
 	}
 	
     public void run() {        

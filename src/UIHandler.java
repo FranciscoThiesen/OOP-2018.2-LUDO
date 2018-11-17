@@ -52,5 +52,9 @@ public class UIHandler extends JFrame {
     public void changePlayer(Player player) {
     	this.controlsPanel.changePlayer(player);
     }
-
+    
+    public void onDiceRoll(Pair<Integer, Integer> result) {
+    	this.controlsPanel.setDice(result.first, result.second);
+    }
+ 
 }
