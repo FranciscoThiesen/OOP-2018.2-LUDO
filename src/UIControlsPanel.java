@@ -12,6 +12,9 @@ public class UIControlsPanel extends JPanel {
 	private JButton rollDiceButton;
 	private JButton nextTurnButton;
 	
+	public SubjectVoid onDiceRollButtonClick = new SubjectVoid();
+	public SubjectVoid onNextTurnButtonClick = new SubjectVoid();
+	
 	public UIControlsPanel() {
         super();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -19,18 +22,38 @@ public class UIControlsPanel extends JPanel {
         this.currentPlayerLabel = new JLabel();
         this.firstDieLabel = new JLabel();
         this.secondDieLabel = new JLabel();
+
+        UIControlsPanel other = this;
         
         this.rollDiceButton = new JButton("Roll");
+        this.rollDiceButton.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e){ other.onClickRollButton(); }
+        });
+        
         this.nextTurnButton = new JButton("Next Turn");
+        this.nextTurnButton.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e){ other.onClickTurnButton(); }
+        });
          
-        this.add(currentPlayerLabel);
-        this.add(firstDieLabel);
-        this.add(secondDieLabel);
-        this.add(rollDiceButton);
-        this.add(nextTurnButton);
+        this.add(this.currentPlayerLabel);
+        this.add(this.firstDieLabel);
+        this.add(this.secondDieLabel);
+        this.add(this.rollDiceButton);
+        this.add(this.nextTurnButton);
         
         this.setCurrentPlayer("Ivan");
         this.setDice(3, 4);
+	}
+	
+	public void onClickRollButton() {
+		this.onDiceRollButtonClick.notifyAllObservers();
+	}
+	
+	public void onClickTurnButton() {
+		this.nextTurnButton.setEnabled(false);
+		this.onNextTurnButtonClick.notifyAllObservers();
 	}
 	
 	public void setCurrentPlayer(String playerName) {
@@ -41,4 +64,13 @@ public class UIControlsPanel extends JPanel {
 		this.firstDieLabel.setText("Die 1 = " + die1);
 		this.secondDieLabel.setText("Die 2 = " + die2);
 	}
+	
+    public void changePlayer(Player player) {
+    	this.setCurrentPlayer(player.getName());
+    }
+    
+    public void allowEndTurn() {
+		this.nextTurnButton.setEnabled(true);
+    }
+
 }
