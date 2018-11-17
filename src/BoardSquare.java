@@ -4,6 +4,7 @@ import java.awt.geom.Rectangle2D;
 public class BoardSquare {
     public Vector2D topLeftPosition;
     public int sideLength;
+    public Color color;
 
     public BoardSquare() {
         this.topLeftPosition = new Vector2D(0, 0);
@@ -32,5 +33,21 @@ public class BoardSquare {
     
     public void setSideLength(int sideLength) {
         this.sideLength = sideLength;
+    }
+    
+    public Vector2D getTopLeftPosition() {
+    	return this.topLeftPosition;
+    }
+    
+    public int getSideLength() {
+    	return this.sideLength;
+    }
+    
+    public void setColor(Color c) {
+    	this.color = c;
+    }
+    
+    public Color getColor() {
+    	return this.color;
     }
 }

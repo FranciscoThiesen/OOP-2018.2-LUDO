@@ -21,6 +21,10 @@ public class Ludo {
 		this.currentPlayerIndex = 0;
 	}
 	
+	public Vector<BoardSquare> getBoardSquareArray() {
+		return this.board.squares;
+	}
+	
     public void run() {        
         System.out.print("Rolando os dados...\n");
         this.dice.roll();
