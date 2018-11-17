@@ -20,18 +20,4 @@ public class Player {
 		return this.pieces;
 	}
 
-	public Vector<Integer> availableMove( Piece p, int diceValue )
-	{
-		Vector<Integer> moves = new Vector<Integer>() ;
-		boolean ok = p.canMove(diceValue);
-		if(ok)
-		{
-			Vector<Integer> path = p.getPieceTrack();
-			int index = p.getPathIndex() + diceValue;
-			int boardSquareIndex = path.get(index);
-			moves.add(boardSquareIndex);
-		}
-		return moves;
-	}
-
 }

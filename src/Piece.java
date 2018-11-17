@@ -21,13 +21,4 @@ public class Piece {
 	{
 		return this.pieceTrack;
 	}
-
-	// This function needs to handle some other game specifications, but now its a simple version
-	public boolean canMove(int numMoves)
-	{
-		int desiredPosition = pathIndex + numMoves;
-		int maxPosition = pieceTrack.size() - 1;
-		return desiredPosition <= maxPosition;
-	}
-
 }
