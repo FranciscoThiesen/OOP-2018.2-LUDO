@@ -26,4 +26,5 @@ public class Player {
 		return this.name;
 	}
 
+	public Color getColor() { return this.color; }
 }

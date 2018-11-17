@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.lang.reflect.Array;
 import java.util.Vector;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Ludo {
 	
@@ -66,179 +67,165 @@ public class Ludo {
 		return piecesOnTarget;
 	}
 
-	/* Essa funcao retorna a peca, e pra qual indice do vetor dela de movimentos ela pode ir... Isso para cada peca que for possivel mover.
-	* Eh melhor implementar dessa forma, do que implementar a posicao absoluta, pois temos que "andar" posicoes no vetor tracks de cada peca
-	* se formos seguir a logica de implementacao estipulada ate aqui*/
-	public ArrayList< Pair<Piece, Integer> > getAllPossibleMoviments(Player playerNumber, int diceValue) {
-
-
-		ArrayList<Pair<Piece, Integer>> possibleMoves = new ArrayList<Pair<Piece, Integer>>();
-		// Se um jogador tirar 5, ele deve andar com um peao que esta no santuario ( se for possivel )
-
-		// Posicoes de abrigo
-		int shelterPositions[] = {25, 38, 51, 64};
-		int exitPositions[] = {16, 29, 42, 55};
-
-		if (diceValue == 5) {
-			boolean hasPieceAtSanctuary = false;
-			boolean hasPieceOnStartPos = false;
-			Vector<Piece> pieces = playerNumber.getPieces();
-			for (Piece p : pieces) {
-				int idx = p.getPathIndex();
-				if (idx == 0) hasPieceAtSanctuary = true;
-				if (idx == 1) hasPieceOnStartPos = true;
+	// Essa funcao visa informar se uma movimentacao de uma determinada peca eh valida. Atentendo as restricoes de barreira descritas nas regras
+	public boolean isValidMove( Piece playerPiece, int totalMoves) {
+		int startPathIndex = playerPiece.getPathIndex();
+		if( startPathIndex + totalMoves >= board.trackLength) return false; // Iria para fora do tabuleiro
+		Player player = playerPiece.getPlayer();
+		// Chegando por uma barreira do inimigo no meio do trajeto
+		for(int inc = 1; inc < totalMoves; ++inc ) {
+			int pathBoardSquareIdx = playerPiece.getPieceTrack().get( startPathIndex + inc);
+			for( Player enemy : players) {
+				if(enemy.getColor() == player.getColor() ) continue;
+				int count = 0;
+				for(Piece p : enemy.getPieces() ) {
+					int pBoardSquareIdx = p.getPieceTrack().get( p.getPathIndex() );
+					if(pBoardSquareIdx == pathBoardSquareIdx) ++count;
+				}
+				if(count >= 2) return false;
 			}
+		}
+		// Checagem se a posicao final do trajeto comporta mais um peao
+		if(startPathIndex + totalMoves == board.trackLength - 1) return true;
+		int finalPathIdx = playerPiece.getPieceTrack().get( startPathIndex + totalMoves);
+		int generalCount = 0;
+		for( Player play : players) {
+			for(Piece p : play.getPieces() ) {
+				int pBoardSquareIdx = p.getPieceTrack().get(p.getPathIndex());
+				if(pBoardSquareIdx == finalPathIdx) generalCount++;
+			}
+		}
+		if(generalCount >= 2) return false; // Isso indica que a casa esta cheia, seja uma barreira propria ou do inimigo ou uma casa de abrigo ou saida que ja possui 2 peoes
 
-			if (hasPieceAtSanctuary == true && hasPieceOnStartPos == false) {
-				for (Piece p : pieces) {
-					if (p.getPathIndex() == 0) {
-						Pair move = new Pair<Piece, Integer>();
+		// Checando se estamos tentando ir para a casa de saida do player e se ele ja tem uma peca dessa cor la
+		if(startPathIndex + totalMoves == 1) {
+			for(Piece p : player.getPieces() ) {
+				if(p != playerPiece && p.getPathIndex() == 1) return false;
+			}
+		}
+		return true;
+	}
+
+	// Lembrar que na ultima casa nao existe barreira. Podemos ter ate mesmo todos os peoes de uma cor na ultima casa da cor. Peoes com pathIndex = 0 estao no santuario, tambem nao formam barreira
+	public boolean playerHasBarrier(Player playerNumber) {
+		Vector<Piece> pieces = playerNumber.getPieces();
+		for(Piece p1 : pieces) {
+			for(Piece p2 : pieces) {
+				if(p1 == p2) continue;
+				if(p1.getPathIndex() == p2.getPathIndex() && p1.getPathIndex() < board.trackLength - 1 && p1.getPathIndex() > 0) return true;
+			}
+		}
+		return false;
+	}
+
+	// If a move the piece to the target position, will it make a capture?
+	public boolean makesCapture(Piece movingPiece, int targetBoardSquare) {
+		int shelterSquares[] = { 25, 38, 51, 64 };
+		int exitSquares[] = { 16, 29, 42, 55 };
+		for(int x : shelterSquares) if(targetBoardSquare == x) return false; // Nao pode capturar em casa abrigo
+		boolean isExitSquare = false;
+		for(int x : exitSquares) if(x == targetBoardSquare) isExitSquare = true;
+		Player pieceOwner = movingPiece.getPlayer();
+		for(Player enemy : players) {
+			if(enemy != pieceOwner) {
+				Color enemyColor = enemy.getColor();
+				for(Piece p : enemy.getPieces() ) {
+					int piecePathIndex = p.getPathIndex();
+					int pieceBoardSquareIndex = p.getPieceTrack().get( p.getPathIndex() );
+					Color pieceColor = enemy.getColor();
+					if(pieceBoardSquareIndex == targetBoardSquare) {
+						// Pode acontecer a captura, se nao for casa de saida
+						// Ou se for uma casa de saida, mas o peao que esta la nao eh da cor correspondente
+						if(!isExitSquare) return true;
+						if(targetBoardSquare == 16 && pieceColor == Color.RED) return false;
+						else if(targetBoardSquare == 29 && pieceColor == Color.GREEN) return false;
+						else if(targetBoardSquare == 42 && pieceColor == Color.YELLOW) return false;
+						else if(targetBoardSquare == 55 && pieceColor == Color.BLUE) return false;
+						else return true;
+
+					}
+				}
+			}
+		}
+		return false; // Se chegou aqui eh porque nao existe peca pra ser capturada
+	}
+
+	// Essa funcao assume que uma peca vai ser capturada! eh necessario saber que makesCapture( movingPiece, targetBoardSquare) == true
+	// Usei optional so pra ele nao reclamar que o retorno pode ser possivelmente vazio, mesmo eu sabendo que sempre vai retornar.
+	// Criar um retorno vazio em cima, implicaria ter que criar um construtor default de peca, que nao faz muito sentido para nossa aplicacao
+	public Optional<Piece> capturedPiece(Piece movingPiece, int targetBoardSquare) {
+		// assert(makesCapture(movingPiece, targetBoardSquare) == true
+		Player pieceOwner = movingPiece.getPlayer();
+		Optional<Piece> ret = Optional.empty();
+		for(Player enemy : players) {
+			if(enemy == pieceOwner) continue;
+			for(Piece p : enemy.getPieces() ) {
+				int piecePathIndex = p.getPathIndex();
+				int pieceBoardSquareIndex = p.getPieceTrack().get( piecePathIndex );
+				if(pieceBoardSquareIndex == targetBoardSquare) {
+					ret = Optional.of(p);
+					break;
+				}
+			}
+		}
+		return ret;
+	}
+
+	/* Essa funcao vai retornar todas as jogadas possiveis por parte de um jogador
+		vet[i] -> (Peca, (indice do path dela para qual ela pode se mover, flag que diz se ocorre captura ou nao ) )
+	 */
+	public Vector< Pair< Piece, Pair<Integer, Boolean> > > allMoves(Player playerNum, int diceValue) {
+		// Casos especiais-> Dice Value = 5 -> Tem que tirar um peao do santuario se for possivel, senao joga qlqr outra peca normalmente
+		Vector< Pair< Piece, Pair<Integer, Boolean> > > allPossibleMoves = new Vector<>(); // Sintaxe linda, ele infere o tipo (:
+		Vector<Piece> pieces = playerNum.getPieces();
+		if(diceValue == 5) {
+			boolean canMovePieceFromSanctuary = false;
+			for(Piece p : pieces ) {
+				if(p.getPathIndex() == 0) {
+					if(isValidMove(p, 1) ) {
+						canMovePieceFromSanctuary = true;
+						Pair< Piece, Pair<Integer, Boolean> > move = new Pair<>();
 						move.first = p;
-						move.second = 1; // Andar para a posicao de saida do santuario
-						possibleMoves.add(move);
+						move.second.first = 1;
+						move.second.second = makesCapture(p, p.getPieceTrack().get(1) );
+						allPossibleMoves.add(move);
 					}
 				}
-				return possibleMoves;
 			}
+			if(canMovePieceFromSanctuary) return allPossibleMoves;
 		}
-
-		/* Esse caso precisa ser tratado especialmente. Pois se o jogaodor tiver uma barreira, ele é obrigado a desfazê-la se for possível.
-		   Para fins de definição, uma barreira é quando um jogador possui duas de suas peças em uma única casa.
-		 */
-
-		if (diceValue == 6) {
-			/* Vou fazer O(n^2), pois n = 4 e não vai mudar nada */
-			int firstBarrier = -1;
-			int secondBarrier = -1; // É quase um milagre, mas pode acontecer..
-
-			Vector<Piece> pieces = playerNumber.getPieces();
-			// Lembrar que pecas na ultima casa nao formam barreira
-			for (int i = 0; i < 4; ++i) {
-				Vector<Integer> firstPieceTrack = pieces.get(i).getPieceTrack();
-				int firstPieceIndex = pieces.get(i).getPathIndex();
-				int firstPiecePosition = firstPieceTrack.get(firstPieceIndex);
-				if (firstPieceIndex == board.trackLength - 1 || firstPieceIndex == 0) continue;
-
-				for (int j = i + 1; j < 4; ++j) {
-					Vector<Integer> secondPieceTrack = pieces.get(j).getPieceTrack();
-					int secondPieceIndex = pieces.get(j).getPathIndex();
-					int secondPiecePosition = secondPieceTrack.get(secondPieceIndex);
-					if (secondPieceIndex == board.trackLength - 1 || secondPieceIndex == 0) continue;
-					if (firstPiecePosition == secondPiecePosition) {
-						if (firstBarrier == -1) {
-							firstBarrier = firstPieceIndex;
-						} else {
-							secondBarrier = firstPieceIndex; // acho que eh muito raro isso acontecer
-						}
-					}
-				}
-			}
-
-			if (firstBarrier != -1) {
-				int nextPositionPathIndex = firstBarrier + 6;
-				if (nextPositionPathIndex < board.trackLength) {
-					// Agora tenho que fazer 2-checks. 1- Pra ver se ja nao tem 2 peoes na casa destino, o outro pra ver se nao tem nenhuma barreira de outro player no meio do caminho
-					// Vou checar pra ver se nao existe barreira de nenhum ini
-					Piece anyPiece = pieces.get(0);
-					int beginningIndex = firstBarrier;
-					Vector<Integer> piecePath = anyPiece.getPieceTrack();
-					boolean obstruction = false;
-					for (int inc = 1; inc <= 6; ++inc) {
-						int boardSquareNumber = piecePath.get(beginningIndex + inc);
-						int lastPositionCrowd = 0;
-						for (Player enemy : players) {
-							int count = 0;
-							Vector<Piece> enemyPieces = enemy.getPieces();
-							for (Piece x : enemyPieces) {
-								int enemyIndex = x.getPathIndex();
-								Vector<Integer> enemyPath = x.getPieceTrack();
-								if (enemyPath.get(enemyIndex) == boardSquareNumber) {
-									++count;
-									if (inc == 6) {
-										lastPositionCrowd++;
-									}
-								}
-								if (count >= 2 && enemy != playerNumber) {
-									obstruction = true;
-									break;
-								}
-							}
-						}
-						if (inc == 6 && lastPositionCrowd >= 2) {
-							obstruction = true;
-							break;
-						}
-					}
-					if (obstruction == false) {
-						Pair<Piece, Integer> move = new Pair<>();
-						for (Piece p : pieces) {
-							if (p.getPathIndex() == firstBarrier) {
-								move.first = p;
-								move.second = p.getPathIndex() + 6;
-								possibleMoves.add(move);
+		if(diceValue == 6) {
+			boolean hasBarrier = playerHasBarrier(playerNum);
+			boolean canMoveBarrierPiece = false;
+			if(hasBarrier) {
+				for(Piece p1 : pieces) {
+					for(Piece p2 : pieces) {
+						if(p1 != p2 && p1.getPathIndex() == p2.getPathIndex() && p1.getPathIndex() > 0 && p1.getPathIndex() < board.trackLength - 1) {
+							if(isValidMove(p1, diceValue) ) {
+								canMoveBarrierPiece = true;
+								Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
+								move.first = p1;
+								move.second.first = p1.getPathIndex() + diceValue;
+								move.second.second = makesCapture(p1, p1.getPieceTrack().get( move.second.first) );
+								allPossibleMoves.add(move);
 							}
 						}
 					}
 				}
 			}
-			if (secondBarrier != -1) {
-				int nextPositionPathIndex = secondBarrier + 6;
-				if (nextPositionPathIndex < board.trackLength) {
-					Piece anyPiece = pieces.get(0);
-					int beginningIndex = firstBarrier;
-					Vector<Integer> piecePath = anyPiece.getPieceTrack();
-					boolean obstruction = false;
-					for (int inc = 1; inc <= 6; ++inc) {
-						int boardSquareNumber = piecePath.get(beginningIndex + inc);
-						int lastPositionCrowd = 0;
-						for (Player enemy : players) {
-							int count = 0;
-							Vector<Piece> enemyPieces = enemy.getPieces();
-							for (Piece x : enemyPieces) {
-								int enemyIndex = x.getPathIndex();
-								Vector<Integer> enemyPath = x.getPieceTrack();
-								if (enemyPath.get(enemyIndex) == boardSquareNumber) {
-									++count;
-									if (inc == 6) {
-										lastPositionCrowd++;
-									}
-								}
-								if (count >= 2 && enemy != playerNumber) {
-									obstruction = true;
-									break;
-								}
-							}
-						}
-						if (inc == 6 && lastPositionCrowd >= 2) {
-							obstruction = true;
-							break;
-						}
-					}
-					if (obstruction == false) {
-						Pair<Piece, Integer> move = new Pair<>();
-						for (Piece p : pieces) {
-							if (p.getPathIndex() == firstBarrier) {
-								move.first = p;
-								move.second = p.getPathIndex() + 6;
-								possibleMoves.add(move);
-							}
-						}
-					}
-				}
-			}
-			if (!possibleMoves.isEmpty()) return possibleMoves; // Caso N = 6
+			if(canMoveBarrierPiece) return allPossibleMoves;
 		}
-
-		for (Piece p : playerNumber.getPieces() ) {
-			int idx = p.getPathIndex();
-			if( idx + diceValue < board.trackLength) {
-				Pair<Piece, Integer> move = new Pair<>();
+		// Se cheguei aqui, eh porque nao cai em nenhuma das regras especiais
+		for(Piece p : pieces) {
+			if(isValidMove(p, diceValue) ) {
+				Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
 				move.first = p;
-				move.second = idx + diceValue;
-				possibleMoves.add(move);
+				move.second.first = p.getPathIndex() + diceValue;
+				move.second.second = makesCapture(p, p.getPieceTrack().get( move.second.first) );
+				allPossibleMoves.add(move);
 			}
 		}
-		return possibleMoves;
+		return allPossibleMoves;
 	}
 
 }

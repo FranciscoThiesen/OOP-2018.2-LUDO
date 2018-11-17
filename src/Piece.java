@@ -12,13 +12,9 @@ public class Piece {
 		this.pieceTrack = track;
 	}
 
-	public int getPathIndex()
-	{
-		return this.pathIndex;
-	}
+	public int getPathIndex() { return this.pathIndex; }
 
-	public Vector<Integer> getPieceTrack()
-	{
-		return this.pieceTrack;
-	}
+	public Vector<Integer> getPieceTrack() { return this.pieceTrack; }
+
+	public Player getPlayer() { return this.player; }
 }
