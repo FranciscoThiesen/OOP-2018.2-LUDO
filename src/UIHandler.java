@@ -15,6 +15,9 @@ public class UIHandler extends JFrame {
     private UIBoardPanel boardPanel;
     private UIControlsPanel controlsPanel;
     
+	public SubjectVoid onDiceRollButtonClick = new SubjectVoid();
+	public SubjectVoid onNextTurnButtonClick = new SubjectVoid();
+    
     public UIHandler() {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenSize = toolkit.getScreenSize();
@@ -31,6 +34,8 @@ public class UIHandler extends JFrame {
         
         this.boardPanel = new UIBoardPanel();
         this.controlsPanel = new UIControlsPanel();
+        this.controlsPanel.onDiceRollButtonClick.attach(() -> { this.onDiceRollButtonClick.notifyAllObservers(); });
+        this.controlsPanel.onNextTurnButtonClick.attach(() -> { this.onNextTurnButtonClick.notifyAllObservers(); });
         
         //- -------------------------
         
@@ -42,6 +47,10 @@ public class UIHandler extends JFrame {
     
     public void updateBoardSquares(Vector<BoardSquare> vec) {
     	this.boardPanel.updateBoardSquares(vec);
+    }
+    
+    public void changePlayer(Player player) {
+    	this.controlsPanel.changePlayer(player);
     }
 
 }

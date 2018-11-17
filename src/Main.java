@@ -4,6 +4,11 @@ public class Main {
     	UIHandler uiHandler = new UIHandler();
     	uiHandler.updateBoardSquares(ludo.getBoardSquareArray());
     	uiHandler.setVisible(true);
+    	
+    	ludo.onPlayerChange.attach((Player player) -> {uiHandler.changePlayer(player);});
+    	uiHandler.onDiceRollButtonClick.attach(() -> {ludo.rollDice();});
+    	uiHandler.onNextTurnButtonClick.attach(() -> {ludo.nextPlayer();});
+    	
     	ludo.run();
     }
 }

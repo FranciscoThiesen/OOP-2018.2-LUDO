@@ -9,15 +9,17 @@ public class Ludo {
 	private Dice dice;
 	private Vector<Player> players;
 	private int currentPlayerIndex;
+
+	public Subject<Player> onPlayerChange = new Subject<Player>();
 	
 	public Ludo() {
 		this.board = new Board();
 		this.dice = new Dice();
 		this.players = new Vector<Player>();
-		this.players.add(new Player(Color.RED, board.redPiecesTracks));
-		this.players.add(new Player(Color.GREEN, board.greenPiecesTracks));
-		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks));
-		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks));
+		this.players.add(new Player(Color.RED, board.redPiecesTracks, "RED"));
+		this.players.add(new Player(Color.GREEN, board.greenPiecesTracks, "GREEN"));
+		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks, "BLUE"));
+		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks, "YELLOW"));
 		this.currentPlayerIndex = 0;
 	}
 	
@@ -25,31 +27,23 @@ public class Ludo {
 		return this.board.squares;
 	}
 	
+	public void nextPlayer() {
+		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % 4;
+		this.onPlayerChange.notifyAllObservers(this.players.get(this.currentPlayerIndex));
+	}
+	
+	public String getCurrentPlayerName() {
+		return this.players.get(this.currentPlayerIndex).getName();
+	}
+	
+	public void rollDice() {
+        System.out.print("Rolando os dados...\n");
+        this.dice.roll();
+        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
+        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
+	}
+	
     public void run() {        
-        System.out.print("Rolando os dados...\n");
-        this.dice.roll();
-        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
-        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
-        
-        System.out.print("Rolando os dados...\n");
-        this.dice.roll();
-        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
-        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
-        
-        System.out.print("Rolando os dados...\n");
-        this.dice.roll();
-        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
-        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
-        
-        System.out.print("Rolando os dados...\n");
-        this.dice.roll();
-        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
-        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
-        
-        System.out.print("Rolando os dados...\n");
-        this.dice.roll();
-        System.out.printf("Dado 1 = %d\n", this.dice.getFirst());
-        System.out.printf("Dado 2 = %d\n", this.dice.getSecond());
 
     }
 

@@ -1,21 +1,22 @@
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.ArrayList;
 
 public class Subject<T> {
 	
-	private List<Observer<T>> observers;
+	private List<Consumer<T>> observers;
 	
 	public Subject() {
-		this.observers = new ArrayList<Observer<T>>();
+		this.observers = new ArrayList<Consumer<T>>();
 	}
 
-	public void attach(Observer<T> observer) {
-		this.observers.add(observer);
+	public void attach(Consumer<T> func) {
+		this.observers.add(func);
 	}
 	
 	public void notifyAllObservers(T value) {
-      for (Observer<T> observer : observers) {
-          observer.update(value);
+      for (Consumer<T> consumer : this.observers) {
+    	  consumer.accept(value);
        }
 	}
 }
