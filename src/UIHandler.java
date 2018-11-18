@@ -37,17 +37,20 @@ public class UIHandler extends JFrame {
         this.controlsPanel.onDiceRollButtonClick.attach(() -> { this.onDiceRollButtonClick.notifyAllObservers(); });
         this.controlsPanel.onNextTurnButtonClick.attach(() -> { this.onNextTurnButtonClick.notifyAllObservers(); });
         
-        //- -------------------------
+        // -------------------------
         
         this.mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.controlsPanel, this.boardPanel);
         this.mainPanel.setOneTouchExpandable(true);
         this.mainPanel.setDividerLocation(150);
         this.add(this.mainPanel);
+        
+        // -------------------------
+        this.boardPanel.updatePiecesInfo(Ludo.getInstance().getPiecesInformation());
+    	this.boardPanel.updateBoardSquares(Ludo.getInstance().getBoardSquareArray());
+    	
+    	this.setVisible(true);
     }
     
-    public void updateBoardSquares(Vector<BoardSquare> vec) {
-    	this.boardPanel.updateBoardSquares(vec);
-    }
     
     public void changePlayer(Player player) {
     	this.controlsPanel.changePlayer(player);

@@ -15,6 +15,10 @@ public class Piece {
 	public int getPathIndex() { return this.pathIndex; }
 
 	public Vector<Integer> getPieceTrack() { return this.pieceTrack; }
+	
+	public int getBoardTrueIndex() {
+		return this.pieceTrack.get(this.pathIndex);
+	}
 
 	public Player getPlayer() { return this.player; }
 }

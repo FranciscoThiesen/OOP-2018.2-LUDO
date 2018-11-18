@@ -15,6 +15,7 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     private boolean isPieceSelected = false;
     
     private Vector<BoardSquare> boardSquaresToDraw;
+    private Vector<PiecePositioningInfo> pieceInfoToDraw;
 	
 	public UIBoardPanel() {
         this.addMouseListener(this);
@@ -22,6 +23,10 @@ public class UIBoardPanel extends JPanel implements MouseListener {
 	
     public void updateBoardSquares(Vector<BoardSquare> vec) {
     	this.boardSquaresToDraw = vec;
+    }
+    
+    public void updatePiecesInfo(Vector<PiecePositioningInfo> vec) {
+    	this.pieceInfoToDraw = vec;
     }
     
     private void drawBoardSquares(Graphics2D g2D) {
@@ -35,11 +40,24 @@ public class UIBoardPanel extends JPanel implements MouseListener {
             g2D.drawRect(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
         }
     }
+    
+    private void drawPieces(Graphics2D g2D) {
+    	for(PiecePositioningInfo p: this.pieceInfoToDraw) {
+        	Vector2D topLeftPosition = p.position.getTopLeftPosition();
+        	int sideLength = p.position.getSideLength();
+        	Color c = p.player.getColor();
+            g2D.setColor(c);
+            g2D.fillOval(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+            g2D.setColor(Color.BLACK);
+            g2D.drawOval(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+    	}
+    }
 
     public void paint(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
         
         this.drawBoardSquares(g2D);
+        this.drawPieces(g2D);
         
         // draw piece
         g2D.setColor(Color.BLACK);

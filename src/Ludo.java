@@ -10,12 +10,25 @@ public class Ludo {
 	private Dice dice;
 	private Vector<Player> players;
 	private int currentPlayerIndex;
+	private Piece selectedPiece;
 
 	public Subject<Player> onPlayerChange = new Subject<Player>();
 	public Subject<Pair<Integer, Integer>> onDiceRoll = new Subject<Pair<Integer, Integer>>();
 	public SubjectVoid onTurnComplete = new SubjectVoid();
+	public Subject<Vector<PiecePositioningInfo>> onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
+	public Subject<Piece> onPieceSelect = new Subject<Piece>();
+	public Subject<Piece> onPieceUnselect = new Subject<Piece>();
 	
-	public Ludo() {
+	private static Ludo instance = null;
+	
+	public static Ludo getInstance() { 
+		if(Ludo.instance == null) {			
+			Ludo.instance = new Ludo();
+		}
+		return Ludo.instance;
+	}
+	
+	private Ludo() {
 		this.board = new Board();
 		this.dice = new Dice();
 		this.players = new Vector<Player>();
@@ -24,6 +37,40 @@ public class Ludo {
 		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks, "BLUE"));
 		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks, "YELLOW"));
 		this.currentPlayerIndex = 0;
+	}
+	
+	public boolean isPieceSelected(Piece piece) {
+		return this.selectedPiece == piece;
+	}
+	
+	public void selectPiece(Piece piece) {
+		this.selectedPiece = piece;
+		this.onPieceSelect.notifyAllObservers(this.selectedPiece);
+	}
+	
+	public void unselectPiece() {
+		Piece piece = this.selectedPiece;
+		this.selectedPiece = null;
+		this.onPieceUnselect.notifyAllObservers(piece);
+	}
+	
+	public void clickOnPiece(Piece piece) {
+		if(piece.getPlayer() == this.players.get(this.currentPlayerIndex)) {
+			this.selectPiece(piece);
+		}
+	}
+	
+	public Vector<PiecePositioningInfo> getPiecesInformation() {
+		Vector<PiecePositioningInfo> vec = new Vector<PiecePositioningInfo>();
+		for(Player player: this.players) {
+			for(Piece piece: player.getPieces()) {
+				PiecePositioningInfo info = new PiecePositioningInfo(piece,
+																	 this.board.squares.get(piece.getBoardTrueIndex()),
+																	 player);
+				vec.add(info);
+			}
+		}
+		return vec;
 	}
 	
 	public Vector<BoardSquare> getBoardSquareArray() {

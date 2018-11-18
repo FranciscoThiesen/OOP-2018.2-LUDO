@@ -43,7 +43,7 @@ public class UIControlsPanel extends JPanel {
         this.add(this.rollDiceButton);
         this.add(this.nextTurnButton);
         
-        this.setCurrentPlayer("Ivan");
+        this.setCurrentPlayer(Ludo.getInstance().getCurrentPlayerName());
         this.setDice(3, 4);
 	}
 	
