@@ -9,13 +9,10 @@ public class UIBoardPanel extends JPanel implements MouseListener {
 	private static final long serialVersionUID = -3395052687382008316L;
 	public static final int DEFAULT_WIDTH  = 600;
     public static final int DEFAULT_HEIGHT = 840;
-
-    private Vector2D piecePosition = new Vector2D(300, 300);
-    private int radius = 50;
-    private boolean isPieceSelected = false;
     
-    private Vector<BoardSquare> boardSquaresToDraw;
-    private Vector<PiecePositioningInfo> pieceInfoToDraw;
+    private Vector<BoardSquare> boardSquaresToDraw = new Vector<BoardSquare>();
+    private Vector<PiecePositioningInfo> pieceInfoToDraw = new Vector<PiecePositioningInfo>();
+    private Vector<PossiblePieceMovement> possiblePieceMovement = new Vector<PossiblePieceMovement>();
     
     public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
 	
@@ -31,6 +28,11 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	this.pieceInfoToDraw = vec;
     }
     
+    public void updatePossibleMovements(Vector<PossiblePieceMovement> vec) {
+    	this.possiblePieceMovement = vec;
+    }
+
+    
     private void drawBoardSquares(Graphics2D g2D) {
         for(int i=0; i<this.boardSquaresToDraw.size(); i++) {
         	BoardSquare boardSquare = this.boardSquaresToDraw.get(i);
@@ -40,6 +42,18 @@ public class UIBoardPanel extends JPanel implements MouseListener {
             g2D.fillRect(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
             g2D.setColor(Color.BLACK);
             g2D.drawRect(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+        }
+    }
+
+    private void drawPossiblePieceMovements(Graphics2D g2D) {
+        for(PossiblePieceMovement p: this.possiblePieceMovement) {
+        	Vector2D topLeftPosition = p.boardSquare.getTopLeftPosition();
+        	int sideLength = p.boardSquare.getSideLength();
+            g2D.setColor(Color.PINK);
+            g2D.fillRect(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+            g2D.setColor(Color.BLACK);
+            g2D.drawRect(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+            g2D.drawString(p.diceRoll.toString(), topLeftPosition.x + 1, topLeftPosition.y + sideLength - 1);
         }
     }
     
@@ -65,17 +79,7 @@ public class UIBoardPanel extends JPanel implements MouseListener {
         
         this.drawBoardSquares(g2D);
         this.drawPieces(g2D);
-        
-        // draw piece
-        g2D.setColor(Color.BLACK);
-        g2D.drawOval(this.piecePosition.x, this.piecePosition.y, this.radius, this.radius);
-		if(this.isPieceSelected) {
-	        g2D.setColor(Color.PINK);
-		} else {
-	        g2D.setColor(Color.CYAN);
-		}
-        g2D.fillOval(this.piecePosition.x, this.piecePosition.y, this.radius, this.radius);
-
+        this.drawPossiblePieceMovements(g2D);
     }
     
     @Override
@@ -94,10 +98,12 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     }
     
     public void onPieceSelect(Piece p) {
+    	this.updatePossibleMovements(Ludo.getInstance().getPlacesGivenPieceCanMove(p));
     	this.repaint();
     }
     
     public void onPieceUnSelect(Piece p) {
+    	this.updatePossibleMovements(new Vector<PossiblePieceMovement>());
     	this.repaint();
     }
 

@@ -233,6 +233,29 @@ public class Ludo {
 		}
 		return ret;
 	}
+	
+	public Player getCurrentPlayer() {
+		return this.players.get(this.currentPlayerIndex);
+	}
+	
+	public Vector<PossiblePieceMovement> getPlacesGivenPieceCanMove(Piece p) {
+		Vector<PossiblePieceMovement> vec = new Vector<PossiblePieceMovement>();
+		for(Integer diceRoll: this.dice.availableDiceValues()) {
+			Vector<Pair<Piece, Pair<Integer, Boolean>>> allMoves = this.allMoves(this.getCurrentPlayer(), diceRoll);
+			for(Pair<Piece, Pair<Integer, Boolean>> res: allMoves) {
+				if(res.first == p) {
+					PossiblePieceMovement move = new PossiblePieceMovement();
+					move.player = p.getPlayer();
+					move.piece = p;
+					move.boardSquare = this.board.squares.get(p.getPieceTrack().get(res.second.first));
+					move.isACaptureMovement = res.second.second;
+					move.diceRoll = diceRoll;
+					vec.add(move);
+				}
+			}
+		}
+		return vec;
+	}
 
 	/* Essa funcao vai retornar todas as jogadas possiveis por parte de um jogador
 		vet[i] -> (Peca, (indice do path dela para qual ela pode se mover, flag que diz se ocorre captura ou nao ) )
@@ -247,7 +270,8 @@ public class Ludo {
 				if(p.getPathIndex() == 0) {
 					if(isValidMove(p, 1) ) {
 						canMovePieceFromSanctuary = true;
-						Pair< Piece, Pair<Integer, Boolean> > move = new Pair<>();
+						Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
+						move.second = new Pair<Integer, Boolean>();
 						move.first = p;
 						move.second.first = 1;
 						move.second.second = makesCapture(p, p.getPieceTrack().get(1) );
@@ -266,7 +290,8 @@ public class Ludo {
 						if(p1 != p2 && p1.getPathIndex() == p2.getPathIndex() && p1.getPathIndex() > 0 && p1.getPathIndex() < board.trackLength - 1) {
 							if(isValidMove(p1, diceValue) ) {
 								canMoveBarrierPiece = true;
-								Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
+								Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
+								move.second = new Pair<Integer, Boolean>();
 								move.first = p1;
 								move.second.first = p1.getPathIndex() + diceValue;
 								move.second.second = makesCapture(p1, p1.getPieceTrack().get( move.second.first) );
@@ -281,7 +306,8 @@ public class Ludo {
 		// Se cheguei aqui, eh porque nao cai em nenhuma das regras especiais
 		for(Piece p : pieces) {
 			if(isValidMove(p, diceValue) ) {
-				Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
+				Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
+				move.second = new Pair<Integer, Boolean>();
 				move.first = p;
 				move.second.first = p.getPathIndex() + diceValue;
 				move.second.second = makesCapture(p, p.getPieceTrack().get( move.second.first) );
