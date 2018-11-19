@@ -21,4 +21,9 @@ public class Piece {
 	}
 
 	public Player getPlayer() { return this.player; }
+	
+	public void setPathIndex(int i) {
+		this.pathIndex = i;
+	}
+
 }

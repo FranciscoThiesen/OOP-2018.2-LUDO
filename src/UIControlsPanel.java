@@ -44,7 +44,7 @@ public class UIControlsPanel extends JPanel {
         this.add(this.nextTurnButton);
         
         this.setCurrentPlayer(Ludo.getInstance().getCurrentPlayerName());
-        this.setDice(1, 1);
+        this.setDice(Ludo.getInstance().getDice());
 	}
 	
 	public void onClickRollButton() {
@@ -60,9 +60,9 @@ public class UIControlsPanel extends JPanel {
 		this.currentPlayerLabel.setText("Current Player = " + playerName);
 	}
 	
-	public void setDice(int die1, int die2) {
-		this.firstDieLabel.setText("Die 1 = " + die1);
-		this.secondDieLabel.setText("Die 2 = " + die2);
+	public void setDice(Dice dice) {
+		this.firstDieLabel.setText("Die 1 = " + dice.getFirst() + (dice.hasUsedFirst() ? " (used)":""));
+		this.secondDieLabel.setText("Die 2 = " + dice.getSecond() + (dice.hasUsedSecond() ? " (used)":""));
 	}
 	
     public void changePlayer(Player player) {

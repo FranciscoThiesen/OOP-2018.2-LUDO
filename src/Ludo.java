@@ -13,7 +13,7 @@ public class Ludo {
 	private Piece selectedPiece;
 
 	public Subject<Player> onPlayerChange = new Subject<Player>();
-	public Subject<Pair<Integer, Integer>> onDiceRoll = new Subject<Pair<Integer, Integer>>();
+	public Subject<Dice> onDiceInfoChange = new Subject<Dice>();
 	public SubjectVoid onTurnComplete = new SubjectVoid();
 	public Subject<Vector<PiecePositioningInfo>> onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
 	public Subject<Piece> onPieceSelect = new Subject<Piece>();
@@ -37,6 +37,20 @@ public class Ludo {
 		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks, "BLUE"));
 		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks, "YELLOW"));
 		this.currentPlayerIndex = 0;
+
+    	this.dice.onStateChange.attach((Dice dice) -> {this.onDiceStateChange(dice);});
+	}
+	
+	public void onDiceStateChange(Dice dice) {
+		this.onDiceInfoChange.notifyAllObservers(dice);
+	}
+	
+	public boolean hasPieceSelected() {
+		return this.selectedPiece != null;
+	}
+	
+	public Piece getPieceSelected() {
+		return this.selectedPiece;
 	}
 
 	public boolean isPieceSelected(Piece piece) {
@@ -76,6 +90,27 @@ public class Ludo {
 				this.clickOnPiece(piece);
 			}
 		}
+		if(	this.hasPieceSelected() &&
+			this.getPieceSelected().getPlayer() == this.getCurrentPlayer()) {
+			Vector<PossiblePieceMovement> moves = this.getPlacesGivenPieceCanMove(this.getPieceSelected());
+			for(PossiblePieceMovement move: moves) {
+				if(move.boardSquare == b && this.isPieceSelected(move.piece)) {
+					this.movePieceToBoardSquare(move.piece, move.boardSquare);
+					this.dice.useRoll(move.diceRoll);
+					this.onPiecesPositionChange.notifyAllObservers(this.getPiecesInformation());
+					this.unselectPiece();
+				}
+			}
+		}
+	}
+	
+	public void movePieceToBoardSquare(Piece p, BoardSquare b) {
+		Vector<Integer> pieceTrack = p.getPieceTrack();
+		for(int i=0; i<pieceTrack.size(); i++) {
+			if(this.board.squares.get(pieceTrack.get(i)) == b) {
+				p.setPathIndex(i);
+			}
+		}
 	}
 
 	public Vector<PiecePositioningInfo> getPiecesInformation() {
@@ -105,8 +140,11 @@ public class Ludo {
 	public void rollDice() {
 		this.dice.roll();
 		Pair<Integer, Integer> notification = new Pair<Integer, Integer>(this.dice.getFirst(), this.dice.getSecond());
-		this.onDiceRoll.notifyAllObservers(notification);
 		this.onTurnComplete.notifyAllObservers();
+	}
+	
+	public Dice getDice() {
+		return this.dice;
 	}
 
 	public void run() {

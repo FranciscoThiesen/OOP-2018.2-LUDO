@@ -22,14 +22,17 @@ public class UIBoardPanel extends JPanel implements MouseListener {
 	
     public void updateBoardSquares(Vector<BoardSquare> vec) {
     	this.boardSquaresToDraw = vec;
+    	this.repaint();
     }
     
     public void updatePiecesInfo(Vector<PiecePositioningInfo> vec) {
     	this.pieceInfoToDraw = vec;
+    	this.repaint();
     }
     
     public void updatePossibleMovements(Vector<PossiblePieceMovement> vec) {
     	this.possiblePieceMovement = vec;
+    	this.repaint();
     }
 
     

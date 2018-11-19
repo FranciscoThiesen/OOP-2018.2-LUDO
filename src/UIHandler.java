@@ -58,8 +58,12 @@ public class UIHandler extends JFrame {
     	this.controlsPanel.changePlayer(player);
     }
     
-    public void onDiceRoll(Pair<Integer, Integer> result) {
-    	this.controlsPanel.setDice(result.first, result.second);
+    public void updatePiecesInfo(Vector<PiecePositioningInfo> vec) {
+    	this.boardPanel.updatePiecesInfo(vec);
+    }
+    
+    public void onDiceInfoChange(Dice dice) {
+    	this.controlsPanel.setDice(dice);
     }
     
     public void onTurnComplete() {

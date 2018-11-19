@@ -3,6 +3,8 @@ import java.util.Vector;
 public class Dice {
 	private Die first;
 	private Die second;
+	
+	public Subject<Dice> onStateChange = new Subject<Dice>();
 
 	public Dice() {
 		this.first = new Die();
@@ -12,6 +14,7 @@ public class Dice {
 	public void roll() {
 		this.first.roll();
 		this.second.roll();
+		this.onStateChange.notifyAllObservers(this);
 	}
 	
 	public int getFirst() {
@@ -31,11 +34,15 @@ public class Dice {
 	}
 	
 	public int useFirst() {
-		return this.first.use();
+		int v = this.first.use();
+		this.onStateChange.notifyAllObservers(this);
+		return v;
 	}
 	
 	public int useSecond() {
-		return this.second.use();
+		int v = this.second.use();
+		this.onStateChange.notifyAllObservers(this);
+		return v;
 	}
 	
 	public Vector<Integer> availableDiceValues() {
@@ -47,5 +54,16 @@ public class Dice {
 			vec.add(this.getSecond());
 		}
 		return vec;
+	}
+	
+	public void useRoll(int roll) {
+		if(roll == this.getFirst() && !this.hasUsedFirst()) {
+			this.useFirst();
+			return;
+		}
+		if(roll == this.getSecond() && !this.hasUsedSecond()) {
+			this.useSecond();
+			return;
+		}
 	}
 }
