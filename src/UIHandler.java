@@ -17,6 +17,7 @@ public class UIHandler extends JFrame {
     
 	public SubjectVoid onDiceRollButtonClick = new SubjectVoid();
 	public SubjectVoid onNextTurnButtonClick = new SubjectVoid();
+    public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
     
     public UIHandler() {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -33,6 +34,7 @@ public class UIHandler extends JFrame {
         // ----------------------
         
         this.boardPanel = new UIBoardPanel();
+        this.boardPanel.onBoardSquareClick.attach((BoardSquare b) -> { this.onBoardSquareClick.notifyAllObservers(b); });
         this.controlsPanel = new UIControlsPanel();
         this.controlsPanel.onDiceRollButtonClick.attach(() -> { this.onDiceRollButtonClick.notifyAllObservers(); });
         this.controlsPanel.onNextTurnButtonClick.attach(() -> { this.onNextTurnButtonClick.notifyAllObservers(); });
@@ -62,6 +64,14 @@ public class UIHandler extends JFrame {
     
     public void onTurnComplete() {
     	this.controlsPanel.allowEndTurn();
+    }
+    
+    public void onPieceSelect(Piece p) {
+    	this.boardPanel.onPieceSelect(p);
+    }
+    
+    public void onPieceUnSelect(Piece p) {
+    	this.boardPanel.onPieceUnSelect(p);
     }
  
 }

@@ -44,7 +44,7 @@ public class UIControlsPanel extends JPanel {
         this.add(this.nextTurnButton);
         
         this.setCurrentPlayer(Ludo.getInstance().getCurrentPlayerName());
-        this.setDice(3, 4);
+        this.setDice(1, 1);
 	}
 	
 	public void onClickRollButton() {

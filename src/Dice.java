@@ -1,3 +1,5 @@
+import java.util.Vector;
+
 public class Dice {
 	private Die first;
 	private Die second;
@@ -34,5 +36,16 @@ public class Dice {
 	
 	public int useSecond() {
 		return this.second.use();
+	}
+	
+	public Vector<Integer> availableDiceValues() {
+		Vector<Integer> vec = new Vector<Integer>();
+		if(!this.hasUsedFirst()) {
+			vec.add(this.getFirst());
+		}
+		if(!this.hasUsedSecond()) {
+			vec.add(this.getSecond());
+		}
+		return vec;
 	}
 }
