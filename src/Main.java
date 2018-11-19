@@ -12,4 +12,3 @@ public class Main {
     	ludo.run();
     }
 }
-d

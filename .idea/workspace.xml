@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fbd451ff-a6cb-4706-a79f-f230996d342d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Ludo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ludo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -29,14 +28,14 @@
         <counts>
           <entry key="class" value="2" />
           <entry key="java" value="33" />
-          <entry key="png" value="1" />
+          <entry key="png" value="2" />
           <entry key="puml" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="CLASS" value="2" />
-          <entry key="Image" value="1" />
+          <entry key="Image" value="2" />
           <entry key="JAVA" value="33" />
           <entry key="PlantUML file" value="3" />
         </counts>
@@ -44,26 +43,31 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="java" value="26363" />
-          <entry key="txt" value="1018" />
+          <entry key="txt" value="1048" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="26363" />
-          <entry key="PLAIN_TEXT" value="1018" />
+          <entry key="PLAIN_TEXT" value="1048" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="225">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="27" selection-start-line="7" selection-start-column="27" selection-end-line="7" selection-end-column="27" />
+            <state relative-caret-position="238">
+              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/diagramaDeSequencia.png">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -75,23 +79,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Ludo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="249" column="150" lean-forward="true" selection-start-line="249" selection-start-column="150" selection-end-line="249" selection-end-column="150" />
+            <state relative-caret-position="414">
+              <caret line="265" column="31" lean-forward="true" selection-start-line="265" selection-start-column="31" selection-end-line="265" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Dice.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="13" selection-start-column="13" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -199,8 +194,8 @@
         <option value="$PROJECT_DIR$/src/Pair.java" />
         <option value="$PROJECT_DIR$/src/Player.java" />
         <option value="$PROJECT_DIR$/src/Piece.java" />
-        <option value="$PROJECT_DIR$/src/Main.java" />
         <option value="$PROJECT_DIR$/src/Ludo.java" />
+        <option value="$PROJECT_DIR$/src/Main.java" />
       </list>
     </option>
   </component>
@@ -244,7 +239,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="path&#9;ACTION&#9;FindInPath" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1542592465428" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1542592511384" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../superLudo" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
@@ -385,14 +380,21 @@
       <option name="project" value="LOCAL" />
       <updated>1542466508271</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Fixing sanctuary pawn mistake">
+      <created>1542592476683</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1542592476683</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="48" y="51" width="2464" height="981" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49884528" weight="0.10968543" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49884528" visible="true" weight="0.10968543" />
       <window_info id="Structure" order="1" sideWeight="0.5011547" side_tool="true" weight="0.19991721" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -408,7 +410,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5008278" side_tool="true" weight="0.3290993" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5008278" side_tool="true" visible="true" weight="0.27713627" />
       <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49710265" weight="0.3290993" />
       <window_info anchor="bottom" id="Messages" order="10" sideWeight="0.4987583" weight="0.28752887" />
       <window_info anchor="bottom" id="Sequence" order="11" sideWeight="0.49917218" weight="0.32871974" />
@@ -468,7 +470,8 @@
     <MESSAGE value="Creating next move checker for a specific player." />
     <MESSAGE value="Merging changes. ( Did nothing basically )" />
     <MESSAGE value="Adding all required functions for displaying all possible moves for a player, given a die value. Also implemented the logic for captures." />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding all required functions for displaying all possible moves for a player, given a die value. Also implemented the logic for captures." />
+    <MESSAGE value="Fixing sanctuary pawn mistake" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixing sanctuary pawn mistake" />
   </component>
   <component name="editorHistoryManager">
     <entry file="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/rt.jar!/java/awt/Window.class">
@@ -512,9 +515,6 @@
           <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/diagramaDeSequencia.png">
-      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/try1.puml" />
     <entry file="file://$PROJECT_DIR$/src/x.puml" />
@@ -600,20 +600,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="27" selection-start-line="7" selection-start-column="27" selection-end-line="7" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Ludo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="249" column="150" lean-forward="true" selection-start-line="249" selection-start-column="150" selection-end-line="249" selection-end-column="150" />
+        <state relative-caret-position="414">
+          <caret line="265" column="31" lean-forward="true" selection-start-line="265" selection-start-column="31" selection-end-line="265" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/diagramaDeSequencia.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
