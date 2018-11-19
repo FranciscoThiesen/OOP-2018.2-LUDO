@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class Ludo {
-	
+
 	private Board board;
 	private Dice dice;
 	private Vector<Player> players;
@@ -15,19 +15,19 @@ public class Ludo {
 	public Subject<Player> onPlayerChange = new Subject<Player>();
 	public Subject<Pair<Integer, Integer>> onDiceRoll = new Subject<Pair<Integer, Integer>>();
 	public SubjectVoid onTurnComplete = new SubjectVoid();
-	public Subject<Vector<PiecePositioningInfo> > onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
+	public Subject<Vector<PiecePositioningInfo>> onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
 	public Subject<Piece> onPieceSelect = new Subject<Piece>();
 	public Subject<Piece> onPieceUnselect = new Subject<Piece>();
-	
+
 	private static Ludo instance = null;
-	
-	public static Ludo getInstance() { 
-		if(Ludo.instance == null) {			
+
+	public static Ludo getInstance() {
+		if(Ludo.instance == null) {
 			Ludo.instance = new Ludo();
 		}
 		return Ludo.instance;
 	}
-	
+
 	private Ludo() {
 		this.board = new Board();
 		this.dice = new Dice();
@@ -38,66 +38,82 @@ public class Ludo {
 		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks, "YELLOW"));
 		this.currentPlayerIndex = 0;
 	}
-	
+
 	public boolean isPieceSelected(Piece piece) {
 		return this.selectedPiece == piece;
 	}
-	
+
 	public void selectPiece(Piece piece) {
 		this.selectedPiece = piece;
 		this.onPieceSelect.notifyAllObservers(this.selectedPiece);
 	}
-	
+
 	public void unselectPiece() {
 		Piece piece = this.selectedPiece;
 		this.selectedPiece = null;
 		this.onPieceUnselect.notifyAllObservers(piece);
 	}
-	
+
 	public void clickOnPiece(Piece piece) {
 		if(piece.getPlayer() == this.players.get(this.currentPlayerIndex)) {
 			this.selectPiece(piece);
 		}
 	}
-	
-	public Vector<PiecePositioningInfo> getPiecesInformation() {
-		Vector<PiecePositioningInfo> vec = new Vector<PiecePositioningInfo>();
+
+	public Vector<Piece> getPiecesArray() {
+		Vector<Piece> vec = new Vector<Piece>();
 		for(Player player: this.players) {
 			for(Piece piece: player.getPieces()) {
-				PiecePositioningInfo info = new PiecePositioningInfo(piece,
-																	 this.board.squares.get(piece.getBoardTrueIndex()),
-																	 player);
-				vec.add(info);
+				vec.add(piece);
 			}
 		}
 		return vec;
 	}
-	
+
+	public void onClickBoardSquare(BoardSquare b) {
+		for(Piece piece: this.getPiecesArray()) {
+			if(this.board.squares.get(piece.getBoardTrueIndex()) == b) {
+				this.clickOnPiece(piece);
+			}
+		}
+	}
+
+	public Vector<PiecePositioningInfo> getPiecesInformation() {
+		Vector<PiecePositioningInfo> vec = new Vector<PiecePositioningInfo>();
+		for(Piece piece: this.getPiecesArray()) {
+			PiecePositioningInfo info = new PiecePositioningInfo(piece,
+					this.board.squares.get(piece.getBoardTrueIndex()),
+					piece.getPlayer());
+			vec.add(info);
+		}
+		return vec;
+	}
+
 	public Vector<BoardSquare> getBoardSquareArray() {
 		return this.board.squares;
 	}
-	
+
 	public void nextPlayer() {
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % 4;
 		this.onPlayerChange.notifyAllObservers(this.players.get(this.currentPlayerIndex));
 	}
-	
+
 	public String getCurrentPlayerName() {
 		return this.players.get(this.currentPlayerIndex).getName();
 	}
-	
+
 	public void rollDice() {
-        this.dice.roll();
-        Pair<Integer, Integer> notification = new Pair<Integer, Integer>(this.dice.getFirst(), this.dice.getSecond());
-        this.onDiceRoll.notifyAllObservers(notification);
-        this.onTurnComplete.notifyAllObservers();
+		this.dice.roll();
+		Pair<Integer, Integer> notification = new Pair<Integer, Integer>(this.dice.getFirst(), this.dice.getSecond());
+		this.onDiceRoll.notifyAllObservers(notification);
+		this.onTurnComplete.notifyAllObservers();
 	}
-	
-    public void run() {        
 
-    }
+	public void run() {
 
-    public ArrayList<Piece> getAllPiecesOnASquare( int targetSquareIndex )
+	}
+
+	public ArrayList<Piece> getAllPiecesOnASquare( int targetSquareIndex )
 	{
 		ArrayList<Piece> piecesOnTarget = new ArrayList<Piece>();
 		for( Player x : players)
@@ -218,6 +234,29 @@ public class Ludo {
 		return ret;
 	}
 
+	public Player getCurrentPlayer() {
+		return this.players.get(this.currentPlayerIndex);
+	}
+
+	public Vector<PossiblePieceMovement> getPlacesGivenPieceCanMove(Piece p) {
+		Vector<PossiblePieceMovement> vec = new Vector<PossiblePieceMovement>();
+		for(Integer diceRoll: this.dice.availableDiceValues()) {
+			Vector<Pair<Piece, Pair<Integer, Boolean>>> allMoves = this.allMoves(this.getCurrentPlayer(), diceRoll);
+			for(Pair<Piece, Pair<Integer, Boolean>> res: allMoves) {
+				if(res.first == p) {
+					PossiblePieceMovement move = new PossiblePieceMovement();
+					move.player = p.getPlayer();
+					move.piece = p;
+					move.boardSquare = this.board.squares.get(p.getPieceTrack().get(res.second.first));
+					move.isACaptureMovement = res.second.second;
+					move.diceRoll = diceRoll;
+					vec.add(move);
+				}
+			}
+		}
+		return vec;
+	}
+
 	/* Essa funcao vai retornar todas as jogadas possiveis por parte de um jogador
 		vet[i] -> (Peca, (indice do path dela para qual ela pode se mover, flag que diz se ocorre captura ou nao ) )
 	 */
@@ -231,7 +270,8 @@ public class Ludo {
 				if(p.getPathIndex() == 0) {
 					if(isValidMove(p, 1) ) {
 						canMovePieceFromSanctuary = true;
-						Pair< Piece, Pair<Integer, Boolean> > move = new Pair<>();
+						Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
+						move.second = new Pair<Integer, Boolean>();
 						move.first = p;
 						move.second.first = 1;
 						move.second.second = makesCapture(p, p.getPieceTrack().get(1) );
@@ -250,7 +290,8 @@ public class Ludo {
 						if(p1 != p2 && p1.getPathIndex() == p2.getPathIndex() && p1.getPathIndex() > 0 && p1.getPathIndex() < board.trackLength - 1) {
 							if(isValidMove(p1, diceValue) ) {
 								canMoveBarrierPiece = true;
-								Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
+								Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
+								move.second = new Pair<Integer, Boolean>();
 								move.first = p1;
 								move.second.first = p1.getPathIndex() + diceValue;
 								move.second.second = makesCapture(p1, p1.getPieceTrack().get( move.second.first) );
@@ -264,21 +305,24 @@ public class Ludo {
 		}
 		// Se cheguei aqui, eh porque nao cai em nenhuma das regras especiais
 		for(Piece p : pieces) {
-			if( p.getPathIndex() == 0 && isValidMove(p, 1) ) {
-				Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
+			if(p.getPathIndex() == 0 && isValidMove(p, 1) ) {
+				Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
+				move.second = new Pair<Integer, Boolean>();
 				move.first = p;
 				move.second.first = p.getPathIndex() + 1;
 				move.second.second = makesCapture(p, p.getPieceTrack().get( move.second.first) );
 				allPossibleMoves.add(move);
 			}
-			else if( isValidMove(p, diceValue) ) {
-				Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
+			else if(p.getPathIndex() > 0 && isValidMove(p, diceValue) ) {
+				Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
+				move.second = new Pair<Integer, Boolean>();
 				move.first = p;
-				move.second.first = p.getPathIndex() + diceValue;
+				move.second.first = p.getPathIndex() + 1;
 				move.second.second = makesCapture(p, p.getPieceTrack().get( move.second.first) );
 				allPossibleMoves.add(move);
 			}
 		}
 		return allPossibleMoves;
 	}
+
 }
