@@ -15,7 +15,7 @@ public class Ludo {
 	public Subject<Player> onPlayerChange = new Subject<Player>();
 	public Subject<Pair<Integer, Integer>> onDiceRoll = new Subject<Pair<Integer, Integer>>();
 	public SubjectVoid onTurnComplete = new SubjectVoid();
-	public Subject<Vector<PiecePositioningInfo>> onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
+	public Subject<Vector<PiecePositioningInfo> > onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
 	public Subject<Piece> onPieceSelect = new Subject<Piece>();
 	public Subject<Piece> onPieceUnselect = new Subject<Piece>();
 	
@@ -264,7 +264,14 @@ public class Ludo {
 		}
 		// Se cheguei aqui, eh porque nao cai em nenhuma das regras especiais
 		for(Piece p : pieces) {
-			if(isValidMove(p, diceValue) ) {
+			if( p.getPathIndex() == 0 && isValidMove(p, 1) ) {
+				Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
+				move.first = p;
+				move.second.first = p.getPathIndex() + 1;
+				move.second.second = makesCapture(p, p.getPieceTrack().get( move.second.first) );
+				allPossibleMoves.add(move);
+			}
+			else if( isValidMove(p, diceValue) ) {
 				Pair< Piece, Pair<Integer, Boolean > > move = new Pair<>();
 				move.first = p;
 				move.second.first = p.getPathIndex() + diceValue;
@@ -274,5 +281,4 @@ public class Ludo {
 		}
 		return allPossibleMoves;
 	}
-
 }
