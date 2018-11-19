@@ -16,6 +16,8 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     
     private Vector<BoardSquare> boardSquaresToDraw;
     private Vector<PiecePositioningInfo> pieceInfoToDraw;
+    
+    public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
 	
 	public UIBoardPanel() {
         this.addMouseListener(this);
@@ -50,10 +52,15 @@ public class UIBoardPanel extends JPanel implements MouseListener {
             g2D.fillOval(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
             g2D.setColor(Color.BLACK);
             g2D.drawOval(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+    		if(Ludo.getInstance().isPieceSelected(p.piece)) {
+                g2D.setColor(Color.WHITE);
+                g2D.drawOval(topLeftPosition.x + sideLength/4, topLeftPosition.y + sideLength/4, sideLength/2, sideLength/2);
+    		}
     	}
     }
 
     public void paint(Graphics g) {
+    	super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
         
         this.drawBoardSquares(g2D);
@@ -76,18 +83,22 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	int x = e.getX();
 		int y = e.getY();
 		Vector2D mousePos = new Vector2D(x, y);
-		System.out.println("Mouse Clicked at X: " + x + " - Y: " + y);
-		
-		if(this.isPieceSelected) {
-			this.isPieceSelected = false;
-			this.piecePosition = new Vector2D(x, y);
-		} else if(mousePos.subtract(this.piecePosition).len2() < this.radius * this.radius) {
-			System.out.println("inside");
-			this.isPieceSelected = true;
-		} else {
-			System.out.println("out");
+		for(BoardSquare b: this.boardSquaresToDraw) {
+			if(	x > b.topLeftPosition.x &&
+				x < b.topLeftPosition.x + b.sideLength &&
+				y > b.topLeftPosition.y &&
+				y < b.topLeftPosition.y + b.sideLength ) {
+				this.onBoardSquareClick.notifyAllObservers(b);
+			}
 		}
-		this.repaint();
+    }
+    
+    public void onPieceSelect(Piece p) {
+    	this.repaint();
+    }
+    
+    public void onPieceUnSelect(Piece p) {
+    	this.repaint();
     }
 
 	@Override

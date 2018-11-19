@@ -60,15 +60,31 @@ public class Ludo {
 		}
 	}
 	
-	public Vector<PiecePositioningInfo> getPiecesInformation() {
-		Vector<PiecePositioningInfo> vec = new Vector<PiecePositioningInfo>();
+	public Vector<Piece> getPiecesArray() {
+		Vector<Piece> vec = new Vector<Piece>();
 		for(Player player: this.players) {
 			for(Piece piece: player.getPieces()) {
-				PiecePositioningInfo info = new PiecePositioningInfo(piece,
-																	 this.board.squares.get(piece.getBoardTrueIndex()),
-																	 player);
-				vec.add(info);
+				vec.add(piece);
 			}
+		}
+		return vec;
+	}
+	
+	public void onClickBoardSquare(BoardSquare b) {
+		for(Piece piece: this.getPiecesArray()) {
+			if(this.board.squares.get(piece.getBoardTrueIndex()) == b) {
+				this.clickOnPiece(piece);
+			}
+		}
+	}
+	
+	public Vector<PiecePositioningInfo> getPiecesInformation() {
+		Vector<PiecePositioningInfo> vec = new Vector<PiecePositioningInfo>();
+		for(Piece piece: this.getPiecesArray()) {
+			PiecePositioningInfo info = new PiecePositioningInfo(piece,
+																 this.board.squares.get(piece.getBoardTrueIndex()),
+																 piece.getPlayer());
+			vec.add(info);
 		}
 		return vec;
 	}
