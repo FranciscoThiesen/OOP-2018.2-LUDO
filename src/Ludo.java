@@ -355,7 +355,7 @@ public class Ludo {
 				Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
 				move.second = new Pair<Integer, Boolean>();
 				move.first = p;
-				move.second.first = p.getPathIndex() + 1;
+				move.second.first = p.getPathIndex() + diceValue;
 				move.second.second = makesCapture(p, p.getPieceTrack().get( move.second.first) );
 				allPossibleMoves.add(move);
 			}
