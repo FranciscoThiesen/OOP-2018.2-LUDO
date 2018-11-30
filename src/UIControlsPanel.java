@@ -8,11 +8,10 @@ public class UIControlsPanel extends JPanel {
 
 	private JLabel currentPlayerLabel;
 	private JLabel firstDieLabel;
-	private JLabel secondDieLabel;
-	private JButton rollDiceButton;
+	private JButton rollDieButton;
 	private JButton nextTurnButton;
 	
-	public SubjectVoid onDiceRollButtonClick = new SubjectVoid();
+	public SubjectVoid onDieRollButtonClick = new SubjectVoid();
 	public SubjectVoid onNextTurnButtonClick = new SubjectVoid();
 	
 	public UIControlsPanel() {
@@ -21,12 +20,11 @@ public class UIControlsPanel extends JPanel {
         
         this.currentPlayerLabel = new JLabel();
         this.firstDieLabel = new JLabel();
-        this.secondDieLabel = new JLabel();
 
         UIControlsPanel other = this;
         
-        this.rollDiceButton = new JButton("Roll");
-        this.rollDiceButton.addActionListener(new ActionListener()
+        this.rollDieButton = new JButton("Roll");
+        this.rollDieButton.addActionListener(new ActionListener()
         {
           public void actionPerformed(ActionEvent e){ other.onClickRollButton(); }
         });
@@ -39,16 +37,15 @@ public class UIControlsPanel extends JPanel {
          
         this.add(this.currentPlayerLabel);
         this.add(this.firstDieLabel);
-        this.add(this.secondDieLabel);
-        this.add(this.rollDiceButton);
+        this.add(this.rollDieButton);
         this.add(this.nextTurnButton);
         
         this.setCurrentPlayer(Ludo.getInstance().getCurrentPlayerName());
-        this.setDice(Ludo.getInstance().getDice());
+        this.setDie(Ludo.getInstance().getDie());
 	}
 	
 	public void onClickRollButton() {
-		this.onDiceRollButtonClick.notifyAllObservers();
+		this.onDieRollButtonClick.notifyAllObservers();
 	}
 	
 	public void onClickTurnButton() {
@@ -60,9 +57,8 @@ public class UIControlsPanel extends JPanel {
 		this.currentPlayerLabel.setText("Current Player = " + playerName);
 	}
 	
-	public void setDice(Dice dice) {
-		this.firstDieLabel.setText("Die 1 = " + dice.getFirst() + (dice.hasUsedFirst() ? " (used)":""));
-		this.secondDieLabel.setText("Die 2 = " + dice.getSecond() + (dice.hasUsedSecond() ? " (used)":""));
+	public void setDie(Die die) {
+		this.firstDieLabel.setText("Die 1 = " + die.getValue() + (die.hasBeenUsed() ? " (used)":""));
 	}
 	
     public void changePlayer(Player player) {

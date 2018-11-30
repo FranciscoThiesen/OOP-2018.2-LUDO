@@ -6,12 +6,12 @@ public class Main {
     	UIHandler uiHandler = new UIHandler();
     	
     	ludo.onPlayerChange.attach((Player player) -> {uiHandler.changePlayer(player);});
-    	ludo.onDiceInfoChange.attach((Dice dice) -> {uiHandler.onDiceInfoChange(dice);});
+    	ludo.onDieInfoChange.attach((Die die) -> {uiHandler.onDieInfoChange(die);});
     	ludo.onTurnComplete.attach(() -> {uiHandler.onTurnComplete();});
     	ludo.onPieceSelect.attach((Piece p) -> {uiHandler.onPieceSelect(p);});
     	ludo.onPieceUnselect.attach((Piece p) -> {uiHandler.onPieceUnSelect(p);});
     	ludo.onPiecesPositionChange.attach((Vector<PiecePositioningInfo> vec) -> {uiHandler.updatePiecesInfo(vec);});
-    	uiHandler.onDiceRollButtonClick.attach(() -> {ludo.rollDice();});
+    	uiHandler.onDieRollButtonClick.attach(() -> {ludo.rollDice();});
     	uiHandler.onNextTurnButtonClick.attach(() -> {ludo.nextPlayer();});
     	uiHandler.onBoardSquareClick.attach((BoardSquare b) -> {ludo.onClickBoardSquare(b);});
     	

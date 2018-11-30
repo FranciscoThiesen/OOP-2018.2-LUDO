@@ -15,7 +15,7 @@ public class UIHandler extends JFrame {
     private UIBoardPanel boardPanel;
     private UIControlsPanel controlsPanel;
     
-	public SubjectVoid onDiceRollButtonClick = new SubjectVoid();
+	public SubjectVoid onDieRollButtonClick = new SubjectVoid();
 	public SubjectVoid onNextTurnButtonClick = new SubjectVoid();
     public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
     
@@ -36,7 +36,7 @@ public class UIHandler extends JFrame {
         this.boardPanel = new UIBoardPanel();
         this.boardPanel.onBoardSquareClick.attach((BoardSquare b) -> { this.onBoardSquareClick.notifyAllObservers(b); });
         this.controlsPanel = new UIControlsPanel();
-        this.controlsPanel.onDiceRollButtonClick.attach(() -> { this.onDiceRollButtonClick.notifyAllObservers(); });
+        this.controlsPanel.onDieRollButtonClick.attach(() -> { this.onDieRollButtonClick.notifyAllObservers(); });
         this.controlsPanel.onNextTurnButtonClick.attach(() -> { this.onNextTurnButtonClick.notifyAllObservers(); });
         
         // -------------------------
@@ -62,8 +62,8 @@ public class UIHandler extends JFrame {
     	this.boardPanel.updatePiecesInfo(vec);
     }
     
-    public void onDiceInfoChange(Dice dice) {
-    	this.controlsPanel.setDice(dice);
+    public void onDieInfoChange(Die die) {
+    	this.controlsPanel.setDie(die);
     }
     
     public void onTurnComplete() {

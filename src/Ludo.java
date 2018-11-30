@@ -7,13 +7,13 @@ import java.util.Optional;
 public class Ludo {
 
 	private Board board;
-	private Dice dice;
+	private Die die;
 	private Vector<Player> players;
 	private int currentPlayerIndex;
 	private Piece selectedPiece;
 
 	public Subject<Player> onPlayerChange = new Subject<Player>();
-	public Subject<Dice> onDiceInfoChange = new Subject<Dice>();
+	public Subject<Die> onDieInfoChange = new Subject<Die>();
 	public SubjectVoid onTurnComplete = new SubjectVoid();
 	public Subject<Vector<PiecePositioningInfo>> onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
 	public Subject<Piece> onPieceSelect = new Subject<Piece>();
@@ -30,7 +30,7 @@ public class Ludo {
 
 	private Ludo() {
 		this.board = new Board();
-		this.dice = new Dice();
+		this.die = new Die();
 		this.players = new Vector<Player>();
 		this.players.add(new Player(Color.RED, board.redPiecesTracks, "RED"));
 		this.players.add(new Player(Color.GREEN, board.greenPiecesTracks, "GREEN"));
@@ -38,11 +38,11 @@ public class Ludo {
 		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks, "YELLOW"));
 		this.currentPlayerIndex = 0;
 
-    	this.dice.onStateChange.attach((Dice dice) -> {this.onDiceStateChange(dice);});
+    	this.die.onStateChange.attach((Die die) -> { this.onDieStateChange(die); });
 	}
 	
-	public void onDiceStateChange(Dice dice) {
-		this.onDiceInfoChange.notifyAllObservers(dice);
+	public void onDieStateChange(Die die) {
+		this.onDieInfoChange.notifyAllObservers(die);
 	}
 	
 	public boolean hasPieceSelected() {
@@ -96,7 +96,7 @@ public class Ludo {
 			for(PossiblePieceMovement move: moves) {
 				if(move.boardSquare == b && this.isPieceSelected(move.piece)) {
 					this.movePieceToBoardSquare(move.piece, move.boardSquare);
-					this.dice.useRoll(move.diceRoll);
+					this.die.use();
 					this.onPiecesPositionChange.notifyAllObservers(this.getPiecesInformation());
 					this.unselectPiece();
 				}
@@ -138,13 +138,13 @@ public class Ludo {
 	}
 
 	public void rollDice() {
-		this.dice.roll();
-		Pair<Integer, Integer> notification = new Pair<Integer, Integer>(this.dice.getFirst(), this.dice.getSecond());
+		this.die.roll();
+		Integer notification = new Integer(this.die.getValue());
 		this.onTurnComplete.notifyAllObservers();
 	}
 	
-	public Dice getDice() {
-		return this.dice;
+	public Die getDie() {
+		return this.die;
 	}
 
 	public void run() {
@@ -278,7 +278,8 @@ public class Ludo {
 
 	public Vector<PossiblePieceMovement> getPlacesGivenPieceCanMove(Piece p) {
 		Vector<PossiblePieceMovement> vec = new Vector<PossiblePieceMovement>();
-		for(Integer diceRoll: this.dice.availableDiceValues()) {
+		// Deixei dessa forma por motivos de como foi implementado anteriormente com um dado extra, podemos mudar essa logica futuramente
+		for(Integer diceRoll : this.die.availableDieValue()) {
 			Vector<Pair<Piece, Pair<Integer, Boolean>>> allMoves = this.allMoves(this.getCurrentPlayer(), diceRoll);
 			for(Pair<Piece, Pair<Integer, Boolean>> res: allMoves) {
 				if(res.first == p) {
