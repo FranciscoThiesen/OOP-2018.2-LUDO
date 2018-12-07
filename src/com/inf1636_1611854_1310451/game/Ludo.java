@@ -17,6 +17,8 @@ public class Ludo {
 	private Vector<Player> players = new Vector<Player>();
 	private int currentPlayerIndex = 0;
 	private Piece selectedPiece;
+	private boolean _isEndTurnActionPossible = false;
+	private boolean _isRollActionPossible = false;
 	
 	public Subject<Ludo> onStateChange = new Subject<Ludo>();
 
@@ -70,6 +72,28 @@ public class Ludo {
 	
 	private int getCurrentPlayerIndex() {
 		return this.currentPlayerIndex;
+	}
+	
+	public boolean isEndTurnActionPossible() {
+		return this._isEndTurnActionPossible;
+	}
+	
+	private void setIsEndTurnActionPossible(boolean value) {
+		this._isEndTurnActionPossible = value;
+		this.onStateChange.notifyAllObservers(this);
+	}
+	
+	public boolean isRollActionPossible() {
+		return this._isRollActionPossible;
+	}
+	
+	private void setIsRollActionPossible(boolean value) {
+		this._isRollActionPossible = value;
+		this.onStateChange.notifyAllObservers(this);
+	}
+	
+	public Vector<Player> getPlayers() {
+		return this.players;
 	}
 	
 	// ===========================================
@@ -139,38 +163,70 @@ public class Ludo {
 		this.setSelectedPiece(null);
 	}
 	
-	public void clickOnPiece(Piece piece) {
-		if(piece.getPlayer() == this.players.get(this.getCurrentPlayerIndex())) {
-			this.setSelectedPiece(piece);
+	private void executeMove(PossiblePieceMovement move) {
+		move.piece.moveToBoardSquare(move.boardSquare);
+		this.die.use();
+		this.unselectPiece();
+		if(die.getValue() == 6) {
+			this.setIsRollActionPossible(true);
+		} else {
+			this.setIsEndTurnActionPossible(true);
 		}
 	}
 	
 	public void clickBoardSquare(BoardSquare b) {
-		for(Piece piece: this.getPiecesArray()) {
-			if(piece.getCurrentBoardSquare() == b) {
-				this.clickOnPiece(piece);
-			}
-		}
-		if(	this.hasPieceSelected() &&
-			this.getSelectedPiece().getPlayer() == this.getCurrentPlayer()) {
-			Vector<PossiblePieceMovement> moves = this.getPlacesGivenPieceCanMove(this.getSelectedPiece());
-			for(PossiblePieceMovement move: moves) {
-				if(move.boardSquare == b && this.isPieceSelected(move.piece)) {
-					move.piece.moveToBoardSquare(this.board, move.boardSquare);
-					this.die.use();
-					this.onStateChange.notifyAllObservers(this);
-					this.unselectPiece();
+		// if does not have a piece selected, select it
+		if(!this.hasPieceSelected()) {
+			for(Piece piece: b.getPieces()) {
+				if(piece.getPlayer() == this.getCurrentPlayer()) {
+					this.setSelectedPiece(piece);
 				}
 			}
+			return;
 		}
+		
+		Vector<PossiblePieceMovement> moves = this.getPlacesGivenPieceCanMove(this.getSelectedPiece());
+		
+		// prioritize movement
+		for(PossiblePieceMovement move: moves) {
+			if(move.boardSquare == b && this.isPieceSelected(move.piece)) {
+				this.executeMove(move);
+				return;
+			}
+		}
+		
+		// if clicking on the same board, unselect piece
+		if(this.getSelectedPiece().getCurrentBoardSquare() == b) {
+			this.unselectPiece();
+			return;
+		}
+		
+		// last, you can click on other piece to change piece selected
+		for(Piece piece: b.getPieces()) {
+			if(piece.getPlayer() == this.getCurrentPlayer()) {
+				this.setSelectedPiece(piece);
+			}
+		}
+		return;
+		
 	}
 	
 	public void endTurn() {
-		this.setCurrentPlayerIndex((this.getCurrentPlayerIndex() + 1) % 4); 
+		this.setCurrentPlayerIndex((this.getCurrentPlayerIndex() + 1) % 4);
+		this.setIsRollActionPossible(true);
+		this.setIsEndTurnActionPossible(false);
 	}
 	
 	public void rollDie() {
-		this.die.roll();
+		if(this.isRollActionPossible()) {
+			this.setIsRollActionPossible(false);
+			this.die.roll();
+			Vector<PossiblePieceMovement> allPossibleMoves = this.allMoves(this.getCurrentPlayer());
+			if(allPossibleMoves.size() == 0) {
+				this.setIsEndTurnActionPossible(true);
+			}
+		}
+		
 	}
 	
 	// ===========================================
@@ -205,11 +261,20 @@ public class Ludo {
 		if(die.getValue() == 6) {
 			Vector<Piece> eligeblePieces = player.getBarrierPiecesThatCanMoveAGivenNumber(6);
 			if(eligeblePieces.size() > 0) {
-				return PossiblePieceMovement.generateMovementsFromArray(eligeblePieces, 1, die.getValue());
+				return PossiblePieceMovement.generateMovementsFromArray(eligeblePieces, die.getValue(), die.getValue());
 			}
 		}
 		Vector<Piece> eligeblePieces = player.getPiecesThatCanMoveAGivenNumber(die.getValue());
 		return PossiblePieceMovement.generateMovementsFromArray(eligeblePieces, die.getValue(), die.getValue());
+	}
+	
+	public void startGame() {
+		for(Player player: this.getPlayers()) {
+			Vector<Piece> pieces = player.getPieces();
+			Piece firstPiece = pieces.get(0);
+			firstPiece.moveToBoardSquare(firstPiece.getBoardSquareInNumMoves(1));
+		}
+		this.setIsRollActionPossible(true);
 	}
 
 }

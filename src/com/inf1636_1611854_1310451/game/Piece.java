@@ -39,7 +39,7 @@ public class Piece {
 		return this.getBoardSquareInNumMoves(0);
 	}
 	
-	public void moveToBoardSquare(Board board, BoardSquare boardSquare) {
+	public void moveToBoardSquare(BoardSquare boardSquare) {
 		Vector<BoardSquare> pieceTrack = this.getPieceTrack();
 		for(int i=0; i<pieceTrack.size(); i++) {
 			if(pieceTrack.get(i) == boardSquare) {
@@ -118,4 +118,5 @@ public class Piece {
 		}
 		return false;
 	}
+	
 }

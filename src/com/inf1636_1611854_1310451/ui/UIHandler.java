@@ -69,7 +69,8 @@ public class UIHandler extends JFrame {
     	this.controlsPanel.changePlayer(ludo.getCurrentPlayer());
     	this.boardPanel.updatePiecesInfo(ludo.getPiecesInformation());
     	this.controlsPanel.updateDie(ludo.getDie());
-    	this.controlsPanel.allowEndTurn(); // TODO
+    	this.controlsPanel.updateIfIsAllowedToRollDie(ludo.isRollActionPossible());
+    	this.controlsPanel.updateIfIsAllowedToEndTurn(ludo.isEndTurnActionPossible());
     	if(ludo.hasPieceSelected()) {    		
     		this.boardPanel.updatePossibleMovements(ludo.getPlacesGivenPieceCanMove(ludo.getSelectedPiece()));
     	} else {

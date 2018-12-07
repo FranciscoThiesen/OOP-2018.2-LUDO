@@ -18,5 +18,7 @@ public class Main {
     	uiHandler.onDieRollButtonClick.attach(() -> {ludo.rollDie();});
     	uiHandler.onNextTurnButtonClick.attach(() -> {ludo.endTurn();});
     	uiHandler.onBoardSquareClick.attach((BoardSquare b) -> {ludo.clickBoardSquare(b);});
+    	
+    	ludo.startGame();
     }
 }

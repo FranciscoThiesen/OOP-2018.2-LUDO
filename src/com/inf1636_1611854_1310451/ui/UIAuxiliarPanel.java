@@ -40,7 +40,9 @@ public class UIAuxiliarPanel extends JPanel {
     }
 
     private void drawDie(Graphics2D g2D) {
-        g2D.drawImage( this.diePictures[ this.die.getValue() - 1], 0, 0, this);
+    	if(!this.die.hasBeenUsed()) {
+            g2D.drawImage( this.diePictures[ this.die.getValue() - 1], 0, 0, this);
+    	}
     }
 
     public void paint(Graphics g) {

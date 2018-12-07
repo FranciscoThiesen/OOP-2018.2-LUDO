@@ -42,7 +42,7 @@ public class Player {
 	public Vector<Piece> getPiecesThatCanMoveAGivenNumber(int numMovements) {
 		Vector<Piece> eligleblePieces = new Vector<Piece>();
 		for(Piece piece: this.getPieces()) {
-			if(piece.isValidMove(numMovements)) {
+			if(piece.isValidMove(numMovements) && !piece.isInSanctuary()) {
 				eligleblePieces.add(piece);
 			}
 		}

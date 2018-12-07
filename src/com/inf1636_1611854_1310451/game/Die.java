@@ -12,7 +12,7 @@ public class Die {
 	public Subject<Die> onStateChange = new Subject<>();
 
 	public Die() {
-		this._hasBeenUsed = false;
+		this._hasBeenUsed = true;
 		this.value = 1;
 		this.rng = new Random();
 		this.onStateChange = new Subject<>();

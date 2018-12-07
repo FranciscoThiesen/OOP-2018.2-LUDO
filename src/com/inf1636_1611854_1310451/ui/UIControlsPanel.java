@@ -15,6 +15,7 @@ import java.util.*;
 public class UIControlsPanel extends JPanel {
 
 	private JLabel currentPlayerLabel;
+	private JLabel currentDieLabel;
 	private UIAuxiliarPanel auxiliarPanel;
 	private JButton rollDieButton;
 	private JButton nextTurnButton;
@@ -27,7 +28,7 @@ public class UIControlsPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
         this.currentPlayerLabel = new JLabel();
-
+        this.currentDieLabel = new JLabel();
         this.auxiliarPanel = new UIAuxiliarPanel();
 
         UIControlsPanel other = this;
@@ -45,6 +46,7 @@ public class UIControlsPanel extends JPanel {
         });
          
         this.add(this.currentPlayerLabel);
+        this.add(this.currentDieLabel);
         this.add(this.rollDieButton);
         this.add(this.nextTurnButton);
         this.add(this.auxiliarPanel);
@@ -65,6 +67,7 @@ public class UIControlsPanel extends JPanel {
 	
 	public void updateDie(Die die) {
 		this.auxiliarPanel.updateDie(die);
+		this.currentDieLabel.setText("Die Result = " + die.getValue() + (die.hasBeenUsed() ? " (used)" : ""));
 	}
 	
     public void changePlayer(Player player) {
@@ -73,6 +76,22 @@ public class UIControlsPanel extends JPanel {
     
     public void allowEndTurn() {
 		this.nextTurnButton.setEnabled(true);
+    }
+    
+    public void updateIfIsAllowedToEndTurn(boolean isAllowedToEndTurn) {
+    	if(isAllowedToEndTurn) {
+    		this.nextTurnButton.setEnabled(true);
+    	} else {
+    		this.nextTurnButton.setEnabled(false);
+    	}
+    }
+    
+    public void updateIfIsAllowedToRollDie(boolean isAllowedToRollDie) {
+    	if(isAllowedToRollDie) {
+    		this.rollDieButton.setEnabled(true);
+    	} else {
+    		this.rollDieButton.setEnabled(false);
+    	}
     }
 
 }
