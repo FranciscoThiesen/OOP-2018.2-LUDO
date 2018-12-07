@@ -46,9 +46,6 @@ public class UIControlsPanel extends JPanel {
         this.add(this.firstDieLabel);
         this.add(this.rollDieButton);
         this.add(this.nextTurnButton);
-        
-        this.setCurrentPlayer(Ludo.getInstance().getCurrentPlayerName());
-        this.setDie(Ludo.getInstance().getDie());
 	}
 	
 	public void onClickRollButton() {

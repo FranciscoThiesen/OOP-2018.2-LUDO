@@ -13,16 +13,10 @@ public class Main {
     	Ludo ludo = Ludo.getInstance();
     	UIHandler uiHandler = new UIHandler();
     	
-    	ludo.onPlayerChange.attach((Player player) -> {uiHandler.changePlayer(player);});
-    	ludo.onDieInfoChange.attach((Die die) -> {uiHandler.onDieInfoChange(die);});
-    	ludo.onTurnComplete.attach(() -> {uiHandler.onTurnComplete();});
-    	ludo.onPieceSelect.attach((Piece p) -> {uiHandler.onPieceSelect(p);});
-    	ludo.onPieceUnselect.attach((Piece p) -> {uiHandler.onPieceUnSelect(p);});
-    	ludo.onPiecesPositionChange.attach((Vector<PiecePositioningInfo> vec) -> {uiHandler.updatePiecesInfo(vec);});
-    	uiHandler.onDieRollButtonClick.attach(() -> {ludo.rollDice();});
-    	uiHandler.onNextTurnButtonClick.attach(() -> {ludo.nextPlayer();});
-    	uiHandler.onBoardSquareClick.attach((BoardSquare b) -> {ludo.onClickBoardSquare(b);});
-    	
-    	ludo.run();
+    	ludo.onStateChange.attach((Ludo ludoInstance) -> { uiHandler.onGameStateChange(); });
+
+    	uiHandler.onDieRollButtonClick.attach(() -> {ludo.rollDie();});
+    	uiHandler.onNextTurnButtonClick.attach(() -> {ludo.endTurn();});
+    	uiHandler.onBoardSquareClick.attach((BoardSquare b) -> {ludo.clickBoardSquare(b);});
     }
 }

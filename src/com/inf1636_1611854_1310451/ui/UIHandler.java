@@ -10,6 +10,7 @@ import com.inf1636_1611854_1310451.game.Ludo;
 import com.inf1636_1611854_1310451.game.Piece;
 import com.inf1636_1611854_1310451.game.PiecePositioningInfo;
 import com.inf1636_1611854_1310451.game.Player;
+import com.inf1636_1611854_1310451.game.PossiblePieceMovement;
 import com.inf1636_1611854_1310451.util.Subject;
 import com.inf1636_1611854_1310451.util.SubjectVoid;
 
@@ -61,32 +62,21 @@ public class UIHandler extends JFrame {
         this.boardPanel.updatePiecesInfo(Ludo.getInstance().getPiecesInformation());
     	this.boardPanel.updateBoardSquares(Ludo.getInstance().getBoardSquareArray());
     	
+    	this.onGameStateChange();
     	this.setVisible(true);
     }
     
-    
-    public void changePlayer(Player player) {
-    	this.controlsPanel.changePlayer(player);
-    }
-    
-    public void updatePiecesInfo(Vector<PiecePositioningInfo> vec) {
-    	this.boardPanel.updatePiecesInfo(vec);
-    }
-    
-    public void onDieInfoChange(Die die) {
-    	this.controlsPanel.setDie(die);
-    }
-    
-    public void onTurnComplete() {
-    	this.controlsPanel.allowEndTurn();
-    }
-    
-    public void onPieceSelect(Piece p) {
-    	this.boardPanel.onPieceSelect(p);
-    }
-    
-    public void onPieceUnSelect(Piece p) {
-    	this.boardPanel.onPieceUnSelect(p);
+    public void onGameStateChange() {
+    	Ludo ludo = Ludo.getInstance();
+    	this.controlsPanel.changePlayer(ludo.getCurrentPlayer());
+    	this.boardPanel.updatePiecesInfo(ludo.getPiecesInformation());
+    	this.controlsPanel.setDie(ludo.getDie());
+    	this.controlsPanel.allowEndTurn(); // TODO
+    	if(ludo.hasPieceSelected()) {    		
+    		this.boardPanel.updatePossibleMovements(ludo.getPlacesGivenPieceCanMove(ludo.getSelectedPiece()));
+    	} else {
+        	this.boardPanel.updatePossibleMovements(new Vector<PossiblePieceMovement>());
+    	}
     }
  
 }

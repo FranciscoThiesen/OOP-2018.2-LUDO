@@ -13,18 +13,37 @@ public class Piece {
 		this.pieceTrack = track;
 	}
 
-	public int getPathIndex() { return this.pathIndex; }
+	public int getPathIndex() {
+		return this.pathIndex;
+	}
 
-	public Vector<Integer> getPieceTrack() { return this.pieceTrack; }
+	public Vector<Integer> getPieceTrack() {
+		return this.pieceTrack;
+	}
 	
 	public int getBoardTrueIndex() {
 		return this.pieceTrack.get(this.pathIndex);
 	}
 
-	public Player getPlayer() { return this.player; }
+	public Player getPlayer() {
+		return this.player;
+	}
 	
 	public void setPathIndex(int i) {
 		this.pathIndex = i;
+	}
+	
+	public void moveToBoardSquare(Board board, BoardSquare boardSquare) {
+		Vector<Integer> pieceTrack = this.getPieceTrack();
+		for(int i=0; i<pieceTrack.size(); i++) {
+			if(board.squares.get(pieceTrack.get(i)) == boardSquare) {
+				this.setPathIndex(i);
+			}
+		}
+	}
+	
+	public BoardSquare pathIndexToBoardSquare(Board board, int pathIndex) {
+		return board.squares.get(this.getPieceTrack().get(pathIndex));
 	}
 
 }

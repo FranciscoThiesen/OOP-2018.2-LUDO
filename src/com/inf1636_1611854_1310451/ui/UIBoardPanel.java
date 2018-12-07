@@ -109,16 +109,6 @@ public class UIBoardPanel extends JPanel implements MouseListener {
 			}
 		}
     }
-    
-    public void onPieceSelect(Piece p) {
-    	this.updatePossibleMovements(Ludo.getInstance().getPlacesGivenPieceCanMove(p));
-    	this.repaint();
-    }
-    
-    public void onPieceUnSelect(Piece p) {
-    	this.updatePossibleMovements(new Vector<PossiblePieceMovement>());
-    	this.repaint();
-    }
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {

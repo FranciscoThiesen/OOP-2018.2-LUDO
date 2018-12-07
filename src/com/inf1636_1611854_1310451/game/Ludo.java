@@ -17,13 +17,6 @@ public class Ludo {
 	private Vector<Player> players = new Vector<Player>();
 	private int currentPlayerIndex = 0;
 	private Piece selectedPiece;
-
-	public Subject<Player> onPlayerChange = new Subject<Player>();
-	public Subject<Die> onDieInfoChange = new Subject<Die>();
-	public SubjectVoid onTurnComplete = new SubjectVoid();
-	public Subject<Vector<PiecePositioningInfo>> onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
-	public Subject<Piece> onPieceSelect = new Subject<Piece>();
-	public Subject<Piece> onPieceUnselect = new Subject<Piece>();
 	
 	public Subject<Ludo> onStateChange = new Subject<Ludo>();
 
@@ -41,6 +34,8 @@ public class Ludo {
 	}
 	
 	// ===========================================
+	// CONSTRUCTOR AND STATE PROPAGATORS
+	// ===========================================
 
 	private Ludo() {
 		this.players.add(new Player(Color.RED, board.redPiecesTracks, "RED"));
@@ -51,137 +46,138 @@ public class Ludo {
     	this.die.onStateChange.attach((Die die) -> { this.onDieStateChange(die); });
 	}
 	
-	public void onDieStateChange(Die die) {
-//		this.onStateChange.notifyAllObservers(this);
-		this.onDieInfoChange.notifyAllObservers(die);
+	private void onDieStateChange(Die die) {
+		this.onStateChange.notifyAllObservers(this);
+	}
+	
+	// ===========================================
+	// GETTERS AND SETTERS
+	// ===========================================
+	
+	private void setSelectedPiece(Piece piece) {
+		this.selectedPiece = piece;
+		this.onStateChange.notifyAllObservers(this);
+	}
+	
+	public Piece getSelectedPiece() {
+		return this.selectedPiece;
+	}
+	
+	private void setCurrentPlayerIndex(int index) {
+		this.currentPlayerIndex = index;
+		this.onStateChange.notifyAllObservers(this);
+	}
+	
+	private int getCurrentPlayerIndex() {
+		return this.currentPlayerIndex;
+	}
+	
+	// ===========================================
+	// ACCESS METHODS
+	// ===========================================
+	
+	// -------------- private ------------
+	private Vector<Piece> getPiecesArray() {
+		Vector<Piece> piecesArray = new Vector<Piece>();
+		for(Player player: this.players) {
+			for(Piece piece: player.getPieces()) {
+				piecesArray.add(piece);
+			}
+		}
+		return piecesArray;
+	}
+	
+	//--------------- public -------------
+	
+	public Vector<BoardSquare> getBoardSquareArray() {
+		return this.board.squares;
+	}
+	
+	public Player getCurrentPlayer() {
+		return this.players.get(this.getCurrentPlayerIndex());
 	}
 	
 	public boolean hasPieceSelected() {
 		return this.selectedPiece != null;
 	}
-	
-	public Piece getPieceSelected() {
-		return this.selectedPiece;
-	}
 
 	public boolean isPieceSelected(Piece piece) {
 		return this.selectedPiece == piece;
 	}
-
-	public void selectPiece(Piece piece) {
-		this.selectedPiece = piece;
-//		this.onStateChange.notifyAllObservers(this);
-		this.onPieceSelect.notifyAllObservers(this.selectedPiece);
+	
+	public Die getDie() {
+		return this.die;
 	}
-
-	public void unselectPiece() {
-		Piece piece = this.selectedPiece;
-		this.selectedPiece = null;
-		this.onPieceUnselect.notifyAllObservers(piece);
-	}
-
-	public void clickOnPiece(Piece piece) {
-		if(piece.getPlayer() == this.players.get(this.currentPlayerIndex)) {
-			this.selectPiece(piece);
+	
+	public Vector<PiecePositioningInfo> getPiecesInformation() {
+		Vector<PiecePositioningInfo> piecesInformation = new Vector<PiecePositioningInfo>();
+		for(Piece piece: this.getPiecesArray()) {
+			PiecePositioningInfo info = new PiecePositioningInfo(piece,
+					this.board.squares.get(piece.getBoardTrueIndex()),
+					piece.getPlayer());
+			piecesInformation.add(info);
 		}
+		return piecesInformation;
 	}
-
-	public Vector<Piece> getPiecesArray() {
-		Vector<Piece> vec = new Vector<Piece>();
-		for(Player player: this.players) {
-			for(Piece piece: player.getPieces()) {
-				vec.add(piece);
+	
+	public Vector<PossiblePieceMovement> getPlacesGivenPieceCanMove(Piece p) {
+		Vector<PossiblePieceMovement> vec = new Vector<PossiblePieceMovement>();
+		Vector<PossiblePieceMovement> allMoves = this.allMoves(this.getCurrentPlayer());
+		for(PossiblePieceMovement move: allMoves) {
+			if(move.piece == p) {
+				vec.add(move);
 			}
 		}
 		return vec;
 	}
+	
+	// ===========================================
+	// STATE CHANGERS
+	// ===========================================
 
-	public void onClickBoardSquare(BoardSquare b) {
+	public void unselectPiece() {
+		this.setSelectedPiece(null);
+	}
+	
+	public void clickOnPiece(Piece piece) {
+		if(piece.getPlayer() == this.players.get(this.getCurrentPlayerIndex())) {
+			this.setSelectedPiece(piece);
+		}
+	}
+	
+	public void clickBoardSquare(BoardSquare b) {
 		for(Piece piece: this.getPiecesArray()) {
 			if(this.board.squares.get(piece.getBoardTrueIndex()) == b) {
 				this.clickOnPiece(piece);
 			}
 		}
 		if(	this.hasPieceSelected() &&
-			this.getPieceSelected().getPlayer() == this.getCurrentPlayer()) {
-			Vector<PossiblePieceMovement> moves = this.getPlacesGivenPieceCanMove(this.getPieceSelected());
+			this.getSelectedPiece().getPlayer() == this.getCurrentPlayer()) {
+			Vector<PossiblePieceMovement> moves = this.getPlacesGivenPieceCanMove(this.getSelectedPiece());
 			for(PossiblePieceMovement move: moves) {
 				if(move.boardSquare == b && this.isPieceSelected(move.piece)) {
-					this.movePieceToBoardSquare(move.piece, move.boardSquare);
+					move.piece.moveToBoardSquare(this.board, move.boardSquare);
 					this.die.use();
-					this.onPiecesPositionChange.notifyAllObservers(this.getPiecesInformation());
+					this.onStateChange.notifyAllObservers(this);
 					this.unselectPiece();
 				}
 			}
 		}
 	}
 	
-	public void movePieceToBoardSquare(Piece p, BoardSquare b) {
-		Vector<Integer> pieceTrack = p.getPieceTrack();
-		for(int i=0; i<pieceTrack.size(); i++) {
-			if(this.board.squares.get(pieceTrack.get(i)) == b) {
-				p.setPathIndex(i);
-			}
-		}
-	}
-
-	public Vector<PiecePositioningInfo> getPiecesInformation() {
-		Vector<PiecePositioningInfo> vec = new Vector<PiecePositioningInfo>();
-		for(Piece piece: this.getPiecesArray()) {
-			PiecePositioningInfo info = new PiecePositioningInfo(piece,
-					this.board.squares.get(piece.getBoardTrueIndex()),
-					piece.getPlayer());
-			vec.add(info);
-		}
-		return vec;
-	}
-
-	public Vector<BoardSquare> getBoardSquareArray() {
-		return this.board.squares;
-	}
-
-	public void nextPlayer() {
-		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % 4;
-		this.onPlayerChange.notifyAllObservers(this.players.get(this.currentPlayerIndex));
-	}
-
-	public String getCurrentPlayerName() {
-		return this.players.get(this.currentPlayerIndex).getName();
-	}
-
-	public void rollDice() {
-		this.die.roll();
-		Integer notification = new Integer(this.die.getValue());
-		this.onTurnComplete.notifyAllObservers();
+	public void endTurn() {
+		this.setCurrentPlayerIndex((this.getCurrentPlayerIndex() + 1) % 4); 
 	}
 	
-	public Die getDie() {
-		return this.die;
+	public void rollDie() {
+		this.die.roll();
 	}
+	
+	// ===========================================
 
-	public void run() {
-
-	}
-
-	public ArrayList<Piece> getAllPiecesOnASquare( int targetSquareIndex )
-	{
-		ArrayList<Piece> piecesOnTarget = new ArrayList<Piece>();
-		for( Player x : players)
-		{
-			Vector<Piece> pieceVector = x.getPieces();
-			for( Piece p : pieceVector)
-			{
-				Vector<Integer> track = p.getPieceTrack();
-				int trackIndex = p.getPathIndex();
-				Integer b = track.get(trackIndex);
-				piecesOnTarget.add( p );
-			}
-		}
-		return piecesOnTarget;
-	}
-
-	// Essa funcao visa informar se uma movimentacao de uma determinada peca eh valida. Atentendo as restricoes de barreira descritas nas regras
-	public boolean isValidMove( Piece playerPiece, int totalMoves) {
+	// Essa funcao visa informar se uma movimentacao de uma determinada peca eh valida.
+	// Atentendo as restricoes de barreira descritas nas regras
+	private boolean isValidMove( Piece playerPiece, int totalMoves) {
 		int startPathIndex = playerPiece.getPathIndex();
 		if( startPathIndex + totalMoves >= board.trackLength) return false; // Iria para fora do tabuleiro
 		Player player = playerPiece.getPlayer();
@@ -220,7 +216,7 @@ public class Ludo {
 	}
 
 	// Lembrar que na ultima casa nao existe barreira. Podemos ter ate mesmo todos os peoes de uma cor na ultima casa da cor. Peoes com pathIndex = 0 estao no santuario, tambem nao formam barreira
-	public boolean playerHasBarrier(Player playerNumber) {
+	private boolean playerHasBarrier(Player playerNumber) {
 		Vector<Piece> pieces = playerNumber.getPieces();
 		for(Piece p1 : pieces) {
 			for(Piece p2 : pieces) {
@@ -232,7 +228,7 @@ public class Ludo {
 	}
 
 	// If a move the piece to the target position, will it make a capture?
-	public boolean makesCapture(Piece movingPiece, int targetBoardSquare) {
+	private boolean makesCapture(Piece movingPiece, int targetBoardSquare) {
 		int shelterSquares[] = { 25, 38, 51, 64 };
 		int exitSquares[] = { 16, 29, 42, 55 };
 		for(int x : shelterSquares) if(targetBoardSquare == x) return false; // Nao pode capturar em casa abrigo
@@ -263,89 +259,49 @@ public class Ludo {
 		return false; // Se chegou aqui eh porque nao existe peca pra ser capturada
 	}
 
-	// Essa funcao assume que uma peca vai ser capturada! eh necessario saber que makesCapture( movingPiece, targetBoardSquare) == true
-	// Usei optional so pra ele nao reclamar que o retorno pode ser possivelmente vazio, mesmo eu sabendo que sempre vai retornar.
-	// Criar um retorno vazio em cima, implicaria ter que criar um construtor default de peca, que nao faz muito sentido para nossa aplicacao
-	public Optional<Piece> capturedPiece(Piece movingPiece, int targetBoardSquare) {
-		// assert(makesCapture(movingPiece, targetBoardSquare) == true
-		Player pieceOwner = movingPiece.getPlayer();
-		Optional<Piece> ret = Optional.empty();
-		for(Player enemy : players) {
-			if(enemy == pieceOwner) continue;
-			for(Piece p : enemy.getPieces() ) {
-				int piecePathIndex = p.getPathIndex();
-				int pieceBoardSquareIndex = p.getPieceTrack().get( piecePathIndex );
-				if(pieceBoardSquareIndex == targetBoardSquare) {
-					ret = Optional.of(p);
-					break;
-				}
-			}
+	// Essa funcao vai retornar todas as jogadas possiveis por parte de um jogador
+	// vet[i] -> (Peca, (indice do path dela para qual ela pode se mover, flag que diz se ocorre captura ou nao ) )
+	//
+	private Vector<PossiblePieceMovement> allMoves(Player player) {
+		// Casos especiais:
+		// Dice Value = 5 -> Tem que tirar um peao do santuario se for possivel, senao joga qlqr outra peca normalmente
+		Vector<PossiblePieceMovement> allPossibleMoves = new Vector<PossiblePieceMovement>();
+		Vector<Piece> pieces = player.getPieces();
+		Die die = this.getDie();
+		if(die.hasBeenUsed()) {
+			return allPossibleMoves;
 		}
-		return ret;
-	}
-
-	public Player getCurrentPlayer() {
-		return this.players.get(this.currentPlayerIndex);
-	}
-
-	public Vector<PossiblePieceMovement> getPlacesGivenPieceCanMove(Piece p) {
-		Vector<PossiblePieceMovement> vec = new Vector<PossiblePieceMovement>();
-		// Deixei dessa forma por motivos de como foi implementado anteriormente com um dado extra, podemos mudar essa logica futuramente
-		for(Integer diceRoll : this.die.availableDieValue()) {
-			Vector<Pair<Piece, Pair<Integer, Boolean>>> allMoves = this.allMoves(this.getCurrentPlayer(), diceRoll);
-			for(Pair<Piece, Pair<Integer, Boolean>> res: allMoves) {
-				if(res.first == p) {
-					PossiblePieceMovement move = new PossiblePieceMovement();
-					move.player = p.getPlayer();
-					move.piece = p;
-					move.boardSquare = this.board.squares.get(p.getPieceTrack().get(res.second.first));
-					move.isACaptureMovement = res.second.second;
-					move.diceRoll = diceRoll;
-					vec.add(move);
-				}
-			}
-		}
-		return vec;
-	}
-
-	/* Essa funcao vai retornar todas as jogadas possiveis por parte de um jogador
-		vet[i] -> (Peca, (indice do path dela para qual ela pode se mover, flag que diz se ocorre captura ou nao ) )
-	 */
-	public Vector< Pair< Piece, Pair<Integer, Boolean> > > allMoves(Player playerNum, int diceValue) {
-		// Casos especiais-> Dice Value = 5 -> Tem que tirar um peao do santuario se for possivel, senao joga qlqr outra peca normalmente
-		Vector< Pair< Piece, Pair<Integer, Boolean> > > allPossibleMoves = new Vector<>(); // Sintaxe linda, ele infere o tipo (:
-		Vector<Piece> pieces = playerNum.getPieces();
-		if(diceValue == 5) {
+		if(die.getValue() == 5) {
 			boolean canMovePieceFromSanctuary = false;
-			for(Piece p : pieces ) {
+			for(Piece p : pieces) {
 				if(p.getPathIndex() == 0) {
 					if(isValidMove(p, 1) ) {
 						canMovePieceFromSanctuary = true;
-						Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
-						move.second = new Pair<Integer, Boolean>();
-						move.first = p;
-						move.second.first = 1;
-						move.second.second = makesCapture(p, p.getPieceTrack().get(1) );
+						PossiblePieceMovement move = new PossiblePieceMovement(	player,
+																				p,
+																				p.pathIndexToBoardSquare(this.board, 1),
+																				this.makesCapture(p, p.getPieceTrack().get(1)),
+																				die.getValue());
 						allPossibleMoves.add(move);
 					}
 				}
 			}
 			if(canMovePieceFromSanctuary) return allPossibleMoves;
 		}
-		if(diceValue == 6) {
-			boolean hasBarrier = playerHasBarrier(playerNum);
+		if(die.getValue() == 6) {
+			boolean hasBarrier = playerHasBarrier(player);
 			boolean canMoveBarrierPiece = false;
 			if(hasBarrier) {
 				for(Piece p1 : pieces) {
 					for(Piece p2 : pieces) {
 						if(p1 != p2 && p1.getPathIndex() == p2.getPathIndex() && p1.getPathIndex() > 0 && p1.getPathIndex() < board.trackLength - 1) {
-							if(isValidMove(p1, diceValue) ) {
+							if(isValidMove(p1, die.getValue()) ) {
 								canMoveBarrierPiece = true;
-								Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
-								move.second = new Pair<Integer, Boolean>();
-								move.first = p1;
-								move.second.first = p1.getPathIndex() + diceValue;
-								move.second.second = makesCapture(p1, p1.getPieceTrack().get( move.second.first) );
+								PossiblePieceMovement move = new PossiblePieceMovement(	player,
+																p1,
+																p1.pathIndexToBoardSquare(this.board, p1.getPathIndex() + die.getValue()),
+																this.makesCapture(p1, p1.getPieceTrack().get(p1.getPathIndex() + die.getValue()) ),
+																die.getValue());
 								allPossibleMoves.add(move);
 							}
 						}
@@ -357,19 +313,19 @@ public class Ludo {
 		// Se cheguei aqui, eh porque nao cai em nenhuma das regras especiais
 		for(Piece p : pieces) {
 			if(p.getPathIndex() == 0 && isValidMove(p, 1) ) {
-				Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
-				move.second = new Pair<Integer, Boolean>();
-				move.first = p;
-				move.second.first = p.getPathIndex() + 1;
-				move.second.second = makesCapture(p, p.getPieceTrack().get( move.second.first) );
+				PossiblePieceMovement move = new PossiblePieceMovement(	player,
+																			p,
+																			p.pathIndexToBoardSquare(this.board, p.getPathIndex() + 1),
+																			this.makesCapture(p, p.getPieceTrack().get(p.getPathIndex() + 1)),
+																			die.getValue());
 				allPossibleMoves.add(move);
 			}
-			else if(p.getPathIndex() > 0 && isValidMove(p, diceValue) ) {
-				Pair< Piece, Pair<Integer, Boolean > > move = new Pair< Piece, Pair<Integer, Boolean > >();
-				move.second = new Pair<Integer, Boolean>();
-				move.first = p;
-				move.second.first = p.getPathIndex() + diceValue;
-				move.second.second = makesCapture(p, p.getPieceTrack().get( move.second.first) );
+			else if(p.getPathIndex() > 0 && isValidMove(p,  die.getValue()) ) {
+				PossiblePieceMovement move = new PossiblePieceMovement(	player,
+																			p,
+																			p.pathIndexToBoardSquare(this.board, p.getPathIndex() + die.getValue()),
+																			this.makesCapture(p, p.getPieceTrack().get(p.getPathIndex() +  die.getValue())),
+																			die.getValue());
 				allPossibleMoves.add(move);
 			}
 		}
