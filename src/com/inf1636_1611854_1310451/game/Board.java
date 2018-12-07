@@ -12,42 +12,42 @@ public class Board {
 
     public Vector<BoardSquare> squares;
     
-    public Vector<Vector<Integer>> redPiecesTracks;
-    public Vector<Vector<Integer>> greenPiecesTracks;
-    public Vector<Vector<Integer>> yellowPiecesTracks;
-    public Vector<Vector<Integer>> bluePiecesTracks;
+    public Vector<Vector<BoardSquare>> redPiecesTracks;
+    public Vector<Vector<BoardSquare>> greenPiecesTracks;
+    public Vector<Vector<BoardSquare>> yellowPiecesTracks;
+    public Vector<Vector<BoardSquare>> bluePiecesTracks;
     public int trackLength;
     private int squareSideLength = 40;
     
-    private Vector<Integer> buildVectorWithIntervalIncluding(int x, int y) {
-    	Vector<Integer> v = new Vector<Integer>();
+    private Vector<BoardSquare> buildVectorWithIntervalIncluding(int x, int y) {
+    	Vector<BoardSquare> v = new Vector<BoardSquare>();
     	for(int i=x; i<=y; i++) {
-    		v.add(i);
+    		v.add(this.squares.get(i));
     	}
     	return v;
     }
     
-    private Vector<Integer> buildPieceTrack(	int startingIndex,
-    											Vector<Integer> leg0,
-    											Vector<Integer> leg1, 
-    											Vector<Integer> leg2, 
-    											Vector<Integer> leg3,
-    											Vector<Integer> finalTrack,
+    private Vector<BoardSquare> buildPieceTrack(	int startingIndex,
+    											Vector<BoardSquare> leg0,
+    											Vector<BoardSquare> leg1, 
+    											Vector<BoardSquare> leg2, 
+    											Vector<BoardSquare> leg3,
+    											Vector<BoardSquare> finalTrack,
     											int finalSquareIndex) {
-    	Vector<Integer> track = new Vector<Integer>();
-    	track.add(startingIndex);
+    	Vector<BoardSquare> track = new Vector<BoardSquare>();
+    	track.add(this.squares.get(startingIndex));
     	track.addAll(leg0);
     	track.addAll(leg1);
     	track.addAll(leg2);
     	track.addAll(leg3);
     	track.addAll(finalTrack);
-    	track.add(finalSquareIndex);
+    	track.add(this.squares.get(finalSquareIndex));
     	return track;
     }
     
-    private void colorVectorWithColor(Vector<Integer> track, Color c) {
+    private void colorVectorWithColor(Vector<BoardSquare> track, Color c) {
     	for(int i=0; i<track.size(); i++) {
-    		this.squares.get(track.get(i)).setColor(c);
+    		track.get(i).setColor(c);
     	}
     }
     
@@ -56,20 +56,20 @@ public class Board {
         for(int i=0; i<92; i++) {
         	this.squares.add(new BoardSquare());
         }
-        Vector<Integer> redLeg = this.buildVectorWithIntervalIncluding(16, 28);
-        Vector<Integer> greenLeg = this.buildVectorWithIntervalIncluding(29, 41);
-        Vector<Integer> yellowLeg = this.buildVectorWithIntervalIncluding(42, 54);
-        Vector<Integer> blueLeg = this.buildVectorWithIntervalIncluding(55, 67);
+        Vector<BoardSquare> redLeg = this.buildVectorWithIntervalIncluding(16, 28);
+        Vector<BoardSquare> greenLeg = this.buildVectorWithIntervalIncluding(29, 41);
+        Vector<BoardSquare> yellowLeg = this.buildVectorWithIntervalIncluding(42, 54);
+        Vector<BoardSquare> blueLeg = this.buildVectorWithIntervalIncluding(55, 67);
         
-        Vector<Integer> redFinalPart = this.buildVectorWithIntervalIncluding(68, 72);
-        Vector<Integer> greenFinalPart = this.buildVectorWithIntervalIncluding(73, 77);
-        Vector<Integer> yellowFinalPart = this.buildVectorWithIntervalIncluding(78, 82);
-        Vector<Integer> blueFinalPart = this.buildVectorWithIntervalIncluding(83, 87);
+        Vector<BoardSquare> redFinalPart = this.buildVectorWithIntervalIncluding(68, 72);
+        Vector<BoardSquare> greenFinalPart = this.buildVectorWithIntervalIncluding(73, 77);
+        Vector<BoardSquare> yellowFinalPart = this.buildVectorWithIntervalIncluding(78, 82);
+        Vector<BoardSquare> blueFinalPart = this.buildVectorWithIntervalIncluding(83, 87);
         
-        this.redPiecesTracks = new Vector<Vector<Integer>>();
-        this.greenPiecesTracks = new Vector<Vector<Integer>>();
-        this.yellowPiecesTracks = new Vector<Vector<Integer>>();
-        this.bluePiecesTracks = new Vector<Vector<Integer>>();
+        this.redPiecesTracks = new Vector<Vector<BoardSquare>>();
+        this.greenPiecesTracks = new Vector<Vector<BoardSquare>>();
+        this.yellowPiecesTracks = new Vector<Vector<BoardSquare>>();
+        this.bluePiecesTracks = new Vector<Vector<BoardSquare>>();
 
         this.redPiecesTracks.add(this.buildPieceTrack(0, redLeg, greenLeg, yellowLeg, blueLeg, redFinalPart, 88));
         this.redPiecesTracks.add(this.buildPieceTrack(1, redLeg, greenLeg, yellowLeg, blueLeg, redFinalPart, 88));
@@ -129,15 +129,20 @@ public class Board {
         this.colorVectorWithColor(yellowFinalPart, Color.YELLOW);
         this.colorVectorWithColor(blueFinalPart, Color.BLUE);
 
-        this.squares.get(redLeg.get(0)).setColor(Color.RED);
-        this.squares.get(greenLeg.get(0)).setColor(Color.GREEN);
-        this.squares.get(yellowLeg.get(0)).setColor(Color.YELLOW);
-        this.squares.get(blueLeg.get(0)).setColor(Color.BLUE);
+        redLeg.get(0).setAsInitialBoardSquare(Color.RED);
+        greenLeg.get(0).setAsInitialBoardSquare(Color.GREEN);
+        yellowLeg.get(0).setAsInitialBoardSquare(Color.YELLOW);
+        blueLeg.get(0).setAsInitialBoardSquare(Color.BLUE);
         
-        this.squares.get(88).setColor(Color.RED);
-        this.squares.get(89).setColor(Color.GREEN);
-        this.squares.get(90).setColor(Color.YELLOW);
-        this.squares.get(91).setColor(Color.BLUE);
+        this.squares.get(88).setAsTerminalBoardSquare(Color.RED);
+        this.squares.get(89).setAsTerminalBoardSquare(Color.GREEN);
+        this.squares.get(90).setAsTerminalBoardSquare(Color.YELLOW);
+        this.squares.get(91).setAsTerminalBoardSquare(Color.BLUE);
+
+        this.squares.get(25).setAsShelter();
+        this.squares.get(38).setAsShelter();
+        this.squares.get(51).setAsShelter();
+        this.squares.get(64).setAsShelter();
     }
 
     public Board() {
