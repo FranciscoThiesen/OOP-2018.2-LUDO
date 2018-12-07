@@ -231,18 +231,6 @@ public class Ludo {
 	
 	// ===========================================
 
-	// Lembrar que na ultima casa nao existe barreira. Podemos ter ate mesmo todos os peoes de uma cor na ultima casa da cor. Peoes com pathIndex = 0 estao no santuario, tambem nao formam barreira
-	private boolean playerHasBarrier(Player playerNumber) {
-		Vector<Piece> pieces = playerNumber.getPieces();
-		for(Piece p1 : pieces) {
-			for(Piece p2 : pieces) {
-				if(p1 == p2) continue;
-				if(p1.getPathIndex() == p2.getPathIndex() && p1.getPathIndex() < board.trackLength - 1 && p1.getPathIndex() > 0) return true;
-			}
-		}
-		return false;
-	}
-
 	private Vector<PossiblePieceMovement> allMoves(Player player) {
 		Die die = this.getDie();
 		Vector<PossiblePieceMovement> allPossibleMoves = new Vector<PossiblePieceMovement>();
