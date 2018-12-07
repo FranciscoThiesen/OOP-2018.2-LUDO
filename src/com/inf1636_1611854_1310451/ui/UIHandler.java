@@ -26,7 +26,7 @@ public class UIHandler extends JFrame {
     
     private UIBoardPanel boardPanel;
     private UIControlsPanel controlsPanel;
-    
+    private UIAuxiliarPanel auxiliarPanel;
 	public SubjectVoid onDieRollButtonClick = new SubjectVoid();
 	public SubjectVoid onNextTurnButtonClick = new SubjectVoid();
     public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
@@ -43,8 +43,6 @@ public class UIHandler extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setResizable(true);
         
-        // ----------------------
-        
         this.boardPanel = new UIBoardPanel();
         this.boardPanel.onBoardSquareClick.attach((BoardSquare b) -> { this.onBoardSquareClick.notifyAllObservers(b); });
         this.controlsPanel = new UIControlsPanel();
@@ -57,7 +55,7 @@ public class UIHandler extends JFrame {
         this.mainPanel.setOneTouchExpandable(true);
         this.mainPanel.setDividerLocation(150);
         this.add(this.mainPanel);
-        
+
         // -------------------------
         this.boardPanel.updatePiecesInfo(Ludo.getInstance().getPiecesInformation());
     	this.boardPanel.updateBoardSquares(Ludo.getInstance().getBoardSquareArray());
@@ -70,7 +68,7 @@ public class UIHandler extends JFrame {
     	Ludo ludo = Ludo.getInstance();
     	this.controlsPanel.changePlayer(ludo.getCurrentPlayer());
     	this.boardPanel.updatePiecesInfo(ludo.getPiecesInformation());
-    	this.controlsPanel.setDie(ludo.getDie());
+    	this.controlsPanel.updateDie(ludo.getDie());
     	this.controlsPanel.allowEndTurn(); // TODO
     	if(ludo.hasPieceSelected()) {    		
     		this.boardPanel.updatePossibleMovements(ludo.getPlacesGivenPieceCanMove(ludo.getSelectedPiece()));

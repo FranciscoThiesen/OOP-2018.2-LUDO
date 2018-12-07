@@ -4,6 +4,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import com.inf1636_1611854_1310451.game.BoardSquare;
 import com.inf1636_1611854_1310451.game.Die;
 import com.inf1636_1611854_1310451.game.Ludo;
 import com.inf1636_1611854_1310451.game.Player;
@@ -14,7 +15,7 @@ import java.util.*;
 public class UIControlsPanel extends JPanel {
 
 	private JLabel currentPlayerLabel;
-	private JLabel firstDieLabel;
+	private UIAuxiliarPanel auxiliarPanel;
 	private JButton rollDieButton;
 	private JButton nextTurnButton;
 	
@@ -26,7 +27,8 @@ public class UIControlsPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
         this.currentPlayerLabel = new JLabel();
-        this.firstDieLabel = new JLabel();
+
+        this.auxiliarPanel = new UIAuxiliarPanel();
 
         UIControlsPanel other = this;
         
@@ -43,9 +45,9 @@ public class UIControlsPanel extends JPanel {
         });
          
         this.add(this.currentPlayerLabel);
-        this.add(this.firstDieLabel);
         this.add(this.rollDieButton);
         this.add(this.nextTurnButton);
+        this.add(this.auxiliarPanel);
 	}
 	
 	public void onClickRollButton() {
@@ -61,8 +63,8 @@ public class UIControlsPanel extends JPanel {
 		this.currentPlayerLabel.setText("Current Player = " + playerName);
 	}
 	
-	public void setDie(Die die) {
-		this.firstDieLabel.setText("Die 1 = " + die.getValue() + (die.hasBeenUsed() ? " (used)":""));
+	public void updateDie(Die die) {
+		this.auxiliarPanel.updateDie(die);
 	}
 	
     public void changePlayer(Player player) {

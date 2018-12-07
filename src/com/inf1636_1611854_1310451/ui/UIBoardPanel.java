@@ -1,10 +1,11 @@
 package com.inf1636_1611854_1310451.ui;
 import java.awt.*;
 import java.awt.event.*;
-
+import java.io.File;
 import javax.swing.*;
 
 import com.inf1636_1611854_1310451.game.BoardSquare;
+import com.inf1636_1611854_1310451.game.Die;
 import com.inf1636_1611854_1310451.game.Ludo;
 import com.inf1636_1611854_1310451.game.Piece;
 import com.inf1636_1611854_1310451.game.PiecePositioningInfo;
@@ -12,8 +13,10 @@ import com.inf1636_1611854_1310451.game.PossiblePieceMovement;
 import com.inf1636_1611854_1310451.util.Subject;
 import com.inf1636_1611854_1310451.util.Vector2D;
 
+import java.awt.image.BufferedImage;
 import java.util.*;
-
+import javax.imageio.*;
+import java.io.IOException;
 public class UIBoardPanel extends JPanel implements MouseListener {
 	
 	private static final long serialVersionUID = -3395052687382008316L;
@@ -23,10 +26,10 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     private Vector<BoardSquare> boardSquaresToDraw = new Vector<BoardSquare>();
     private Vector<PiecePositioningInfo> pieceInfoToDraw = new Vector<PiecePositioningInfo>();
     private Vector<PossiblePieceMovement> possiblePieceMovement = new Vector<PossiblePieceMovement>();
-    
     public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
 	
-	public UIBoardPanel() {
+	public UIBoardPanel()
+    {
         this.addMouseListener(this);
 	}
 	
@@ -44,7 +47,6 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	this.possiblePieceMovement = vec;
     	this.repaint();
     }
-
     
     private void drawBoardSquares(Graphics2D g2D) {
         for(int i=0; i<this.boardSquaresToDraw.size(); i++) {
@@ -69,7 +71,7 @@ public class UIBoardPanel extends JPanel implements MouseListener {
             g2D.drawString(p.diceRoll.toString(), topLeftPosition.x + 1, topLeftPosition.y + sideLength - 1);
         }
     }
-    
+
     private void drawPieces(Graphics2D g2D) {
     	for(PiecePositioningInfo p: this.pieceInfoToDraw) {
         	Vector2D topLeftPosition = p.position.getTopLeftPosition();
