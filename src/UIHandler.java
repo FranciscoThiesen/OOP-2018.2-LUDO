@@ -14,7 +14,7 @@ public class UIHandler extends JFrame {
     
     private UIBoardPanel boardPanel;
     private UIControlsPanel controlsPanel;
-    
+    private UIAuxiliarPanel auxiliarPanel;
 	public SubjectVoid onDieRollButtonClick = new SubjectVoid();
 	public SubjectVoid onNextTurnButtonClick = new SubjectVoid();
     public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
@@ -44,13 +44,16 @@ public class UIHandler extends JFrame {
         this.mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.controlsPanel, this.boardPanel);
         this.mainPanel.setOneTouchExpandable(true);
         this.mainPanel.setDividerLocation(150);
-        this.add(this.mainPanel);
-        
+
         // -------------------------
         this.boardPanel.updatePiecesInfo(Ludo.getInstance().getPiecesInformation());
     	this.boardPanel.updateBoardSquares(Ludo.getInstance().getBoardSquareArray());
-    	
-    	this.setVisible(true);
+
+    	this.auxiliarPanel = new UIAuxiliarPanel();
+
+        this.add(this.mainPanel);
+
+        this.setVisible(true);
     }
     
     
@@ -63,7 +66,10 @@ public class UIHandler extends JFrame {
     }
     
     public void onDieInfoChange(Die die) {
-    	this.controlsPanel.setDie(die);
+
+        this.controlsPanel.setDie(die);
+        this.auxiliarPanel.updateDie(die);
+        this.boardPanel.updateDie(die);
     }
     
     public void onTurnComplete() {

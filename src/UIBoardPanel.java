@@ -1,9 +1,11 @@
 import java.awt.*;
 import java.awt.event.*;
-
+import java.io.File;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
-
+import javax.imageio.*;
+import java.io.IOException;
 public class UIBoardPanel extends JPanel implements MouseListener {
 	
 	private static final long serialVersionUID = -3395052687382008316L;
@@ -13,10 +15,21 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     private Vector<BoardSquare> boardSquaresToDraw = new Vector<BoardSquare>();
     private Vector<PiecePositioningInfo> pieceInfoToDraw = new Vector<PiecePositioningInfo>();
     private Vector<PossiblePieceMovement> possiblePieceMovement = new Vector<PossiblePieceMovement>();
-    
+    private Die die = new Die();
+    private BufferedImage[] diePictures = new BufferedImage[6];
     public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
 	
-	public UIBoardPanel() {
+	public UIBoardPanel()
+    {
+        String fileNames[] = {"out/production/Ludo/Dado1.png", "out/production/Ludo/Dado2.png", "out/production/Ludo/Dado3.png", "out/production/Ludo/Dado4.png", "out/production/Ludo/Dado5.png", "out/production/Ludo/Dado6.png"};
+        for(int i = 0; i < 6; ++i) {
+            try {
+                this.diePictures[i] = ImageIO.read(new File(fileNames[i]));
+                System.out.print("Inseri uma das faces\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         this.addMouseListener(this);
 	}
 	
@@ -35,7 +48,11 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	this.repaint();
     }
 
-    
+    public void updateDie( Die die ) {
+	    this.die = die;
+	    this.repaint();
+    }
+
     private void drawBoardSquares(Graphics2D g2D) {
         for(int i=0; i<this.boardSquaresToDraw.size(); i++) {
         	BoardSquare boardSquare = this.boardSquaresToDraw.get(i);
@@ -59,7 +76,7 @@ public class UIBoardPanel extends JPanel implements MouseListener {
             g2D.drawString(p.diceRoll.toString(), topLeftPosition.x + 1, topLeftPosition.y + sideLength - 1);
         }
     }
-    
+
     private void drawPieces(Graphics2D g2D) {
     	for(PiecePositioningInfo p: this.pieceInfoToDraw) {
         	Vector2D topLeftPosition = p.position.getTopLeftPosition();
@@ -76,6 +93,10 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	}
     }
 
+    private void drawDie(Graphics2D g2D) {
+	    g2D.drawImage( this.diePictures[ this.die.getValue() - 1], 25, 25, this);
+	}
+
     public void paint(Graphics g) {
     	super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
@@ -83,6 +104,7 @@ public class UIBoardPanel extends JPanel implements MouseListener {
         this.drawBoardSquares(g2D);
         this.drawPieces(g2D);
         this.drawPossiblePieceMovements(g2D);
+        this.drawDie(g2D);
     }
     
     @Override

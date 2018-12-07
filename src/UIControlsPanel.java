@@ -7,7 +7,7 @@ import java.util.*;
 public class UIControlsPanel extends JPanel {
 
 	private JLabel currentPlayerLabel;
-	private JLabel firstDieLabel;
+	//private JLabel firstDieLabel;
 	private JButton rollDieButton;
 	private JButton nextTurnButton;
 	
@@ -19,7 +19,7 @@ public class UIControlsPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
         this.currentPlayerLabel = new JLabel();
-        this.firstDieLabel = new JLabel();
+        //this.firstDieLabel = new JLabel();
 
         UIControlsPanel other = this;
         
@@ -36,12 +36,12 @@ public class UIControlsPanel extends JPanel {
         });
          
         this.add(this.currentPlayerLabel);
-        this.add(this.firstDieLabel);
+        //this.add(this.firstDieLabel);
         this.add(this.rollDieButton);
         this.add(this.nextTurnButton);
         
         this.setCurrentPlayer(Ludo.getInstance().getCurrentPlayerName());
-        this.setDie(Ludo.getInstance().getDie());
+        //this.setDie(Ludo.getInstance().getDie());
 	}
 	
 	public void onClickRollButton() {
@@ -58,7 +58,7 @@ public class UIControlsPanel extends JPanel {
 	}
 	
 	public void setDie(Die die) {
-		this.firstDieLabel.setText("Die 1 = " + die.getValue() + (die.hasBeenUsed() ? " (used)":""));
+		//this.firstDieLabel.setText("Die = " + die.getValue() + (die.hasBeenUsed() ? " (used)":""));
 	}
 	
     public void changePlayer(Player player) {
