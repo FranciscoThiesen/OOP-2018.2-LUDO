@@ -1,5 +1,8 @@
+package com.inf1636_1611854_1310451.game;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+
+import com.inf1636_1611854_1310451.util.Vector2D;
 
 public class BoardSquare {
     public Vector2D topLeftPosition;

@@ -1,4 +1,7 @@
+package com.inf1636_1611854_1310451.game;
 import java.util.Vector;
+
+import com.inf1636_1611854_1310451.util.Subject;
 
 public class Dice {
 	private Die first;

@@ -1,15 +1,21 @@
+package com.inf1636_1611854_1310451.game;
 import java.awt.Color;
 import java.lang.reflect.Array;
 import java.util.Vector;
+
+import com.inf1636_1611854_1310451.util.Pair;
+import com.inf1636_1611854_1310451.util.Subject;
+import com.inf1636_1611854_1310451.util.SubjectVoid;
+
 import java.util.ArrayList;
 import java.util.Optional;
 
 public class Ludo {
 
-	private Board board;
-	private Die die;
-	private Vector<Player> players;
-	private int currentPlayerIndex;
+	private Board board = new Board();
+	private Die die = new Die();
+	private Vector<Player> players = new Vector<Player>();
+	private int currentPlayerIndex = 0;
 	private Piece selectedPiece;
 
 	public Subject<Player> onPlayerChange = new Subject<Player>();
@@ -18,7 +24,13 @@ public class Ludo {
 	public Subject<Vector<PiecePositioningInfo>> onPiecesPositionChange = new Subject<Vector<PiecePositioningInfo>>();
 	public Subject<Piece> onPieceSelect = new Subject<Piece>();
 	public Subject<Piece> onPieceUnselect = new Subject<Piece>();
+	
+	public Subject<Ludo> onStateChange = new Subject<Ludo>();
 
+	// ===========================================
+	// SINGLETON DESIGN PATTERN
+	// ===========================================
+	
 	private static Ludo instance = null;
 
 	public static Ludo getInstance() {
@@ -27,21 +39,20 @@ public class Ludo {
 		}
 		return Ludo.instance;
 	}
+	
+	// ===========================================
 
 	private Ludo() {
-		this.board = new Board();
-		this.die = new Die();
-		this.players = new Vector<Player>();
 		this.players.add(new Player(Color.RED, board.redPiecesTracks, "RED"));
 		this.players.add(new Player(Color.GREEN, board.greenPiecesTracks, "GREEN"));
 		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks, "BLUE"));
 		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks, "YELLOW"));
-		this.currentPlayerIndex = 0;
 
     	this.die.onStateChange.attach((Die die) -> { this.onDieStateChange(die); });
 	}
 	
 	public void onDieStateChange(Die die) {
+//		this.onStateChange.notifyAllObservers(this);
 		this.onDieInfoChange.notifyAllObservers(die);
 	}
 	
@@ -59,6 +70,7 @@ public class Ludo {
 
 	public void selectPiece(Piece piece) {
 		this.selectedPiece = piece;
+//		this.onStateChange.notifyAllObservers(this);
 		this.onPieceSelect.notifyAllObservers(this.selectedPiece);
 	}
 

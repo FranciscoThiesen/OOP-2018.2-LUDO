@@ -1,3 +1,4 @@
+package com.inf1636_1611854_1310451.game;
 import java.awt.*;
 
 public class PiecePositioningInfo {

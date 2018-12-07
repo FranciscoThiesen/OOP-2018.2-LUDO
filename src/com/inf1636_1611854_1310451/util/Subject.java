@@ -1,3 +1,4 @@
+package com.inf1636_1611854_1310451.util;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.ArrayList;

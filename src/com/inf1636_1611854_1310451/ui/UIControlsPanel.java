@@ -1,7 +1,14 @@
+package com.inf1636_1611854_1310451.ui;
 import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+
+import com.inf1636_1611854_1310451.game.Die;
+import com.inf1636_1611854_1310451.game.Ludo;
+import com.inf1636_1611854_1310451.game.Player;
+import com.inf1636_1611854_1310451.util.SubjectVoid;
+
 import java.util.*;
 
 public class UIControlsPanel extends JPanel {

@@ -1,3 +1,4 @@
+package com.inf1636_1611854_1310451.util;
 import java.util.Vector;
 
 public class Pair<T1, T2> {
