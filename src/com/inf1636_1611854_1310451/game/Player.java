@@ -26,29 +26,23 @@ public class Player implements Savable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String saveStateToString() {
+	public JSONObject saveStateToJSON() {
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
 		for(Piece piece: this.pieces) {			
-			array.add(piece.saveStateToString());
+			array.add(piece.saveStateToJSON());
 		}
 		obj.put("name", this.name);
 		obj.put("pieces", array);
-		return obj.toJSONString();
+		return obj;
 	}
 	
-	public void loadStateFromString(String str) {
-	      JSONParser parser = new JSONParser();
-	      try{
-	    	JSONObject obj = (JSONObject) parser.parse(str);
-	    	JSONArray array = (JSONArray) obj.get("pieces");
-			for(int i=0; i<array.size(); i++) {			
-				this.pieces.get(i).loadStateFromString((String) array.get(i));
-			}
-	    	this.name = (String) obj.get("name");
-	      }catch(ParseException pe){
-	          System.out.println("Error loading Player state from JSON.");
-	       }
+	public void loadStateFromJSON(JSONObject obj) {
+		JSONArray array = (JSONArray) obj.get("pieces");
+		for(int i=0; i<array.size(); i++) {			
+			this.pieces.get(i).loadStateFromJSON((JSONObject) array.get(i));
+		}
+		this.name = (String) obj.get("name");
 	}
 
 	public Vector<Piece> getPieces()

@@ -25,22 +25,16 @@ public class Die implements Savable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String saveStateToString() {
+	public JSONObject saveStateToJSON() {
 		JSONObject obj = new JSONObject();
 		obj.put("value", this.value);
 		obj.put("_hasBeenUsed", this._hasBeenUsed);
-		return obj.toJSONString();
+		return obj;
 	}
 	
-	public void loadStateFromString(String str) {
-	      JSONParser parser = new JSONParser();
-	      try{
-		      JSONObject obj = (JSONObject) parser.parse(str);
-		      this.value = (Integer) obj.get("value");
-		      this._hasBeenUsed = (Boolean) obj.get("_hasBeenUsed");
-	      }catch(ParseException pe){
-	          System.out.println("Error loading Die state from JSON.");
-	       }
+	public void loadStateFromJSON(JSONObject obj) {
+		this.value = ((Long) obj.get("value")).intValue();
+		this._hasBeenUsed = (Boolean) obj.get("_hasBeenUsed");
 	}
 	
 	public void roll() {

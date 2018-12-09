@@ -20,20 +20,14 @@ public class Piece implements Savable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String saveStateToString() {
+	public JSONObject saveStateToJSON() {
 		JSONObject obj = new JSONObject();
 		obj.put("pathIndex", this.pathIndex);
-		return obj.toJSONString();
+		return obj;
 	}
 	
-	public void loadStateFromString(String str) {
-	      JSONParser parser = new JSONParser();
-	      try{
-		      JSONObject obj = (JSONObject) parser.parse(str);
-		      this.setPathIndex((Integer) obj.get("pathIndex"));
-	      }catch(ParseException pe){
-	          System.out.println("Error loading Piece state from JSON.");
-	       }
+	public void loadStateFromJSON(JSONObject obj) {
+		this.setPathIndex(((Long) obj.get("pathIndex")).intValue());
 	}
 
 	public int getPathIndex() {

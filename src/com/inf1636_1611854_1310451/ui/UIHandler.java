@@ -48,8 +48,6 @@ public class UIHandler extends JFrame {
         this.add(this.mainPanel);
 
         // -------------------------
-    	this.boardPanel.updateBoardSquares(Ludo.getInstance().getBoardSquareArray());
-    	
     	Ludo.getInstance().onStateChange.attach((Ludo ludoInstance) -> { this.onGameStateChange(); });
     	
     	this.onGameStateChange();
@@ -58,6 +56,7 @@ public class UIHandler extends JFrame {
     
     public void onGameStateChange() {
     	Ludo ludo = Ludo.getInstance();
+    	this.boardPanel.updateBoardSquares(Ludo.getInstance().getBoardSquareArray());
     	this.controlsPanel.changePlayer(ludo.getCurrentPlayer());
     	this.controlsPanel.updateDie(ludo.getDie());
     	this.controlsPanel.updateIfIsAllowedToRollDie(ludo.isRollActionPossible());

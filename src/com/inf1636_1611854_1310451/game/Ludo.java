@@ -40,12 +40,17 @@ public class Ludo implements Savable {
 	// ===========================================
 
 	private Ludo() {
+		this.initPlayers();
+
+    	this.die.onStateChange.attach((Die die) -> { this.onDieStateChange(die); });
+	}
+	
+	private void initPlayers() {
+    	this.players = new Vector<Player>();
 		this.players.add(new Player(Color.RED, board.redPiecesTracks, "RED"));
 		this.players.add(new Player(Color.GREEN, board.greenPiecesTracks, "GREEN"));
 		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks, "YELLOW"));
 		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks, "BLUE"));
-
-    	this.die.onStateChange.attach((Die die) -> { this.onDieStateChange(die); });
 	}
 	
 	private void onDieStateChange(Die die) {
@@ -57,35 +62,33 @@ public class Ludo implements Savable {
 	// ===========================================
 	
 	@SuppressWarnings("unchecked")
-	public String saveStateToString() {
+	public JSONObject saveStateToJSON() {
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
 		for(Player player: this.players) {			
-			array.add(player.saveStateToString());
+			array.add(player.saveStateToJSON());
 		}
 		obj.put("players", array);
-		obj.put("die", this.die.saveStateToString());
+		obj.put("die", this.die.saveStateToJSON());
 		obj.put("currentPlayerIndex", this.currentPlayerIndex);
 		obj.put("_isEndTurnActionPossible", this._isEndTurnActionPossible);
 		obj.put("_isRollActionPossible", this._isRollActionPossible);
-		return obj.toJSONString();
+		return obj;
 	}
 	
-	public void loadStateFromString(String str) {
-	      JSONParser parser = new JSONParser();
-	      try{
-	    	JSONObject obj = (JSONObject) parser.parse(str);
-	    	JSONArray array = (JSONArray) obj.get("players");
-	    	this.die.loadStateFromString((String) obj.get("die"));
-	    	this.currentPlayerIndex = (Integer) obj.get("currentPlayerIndex");
-	    	this._isEndTurnActionPossible = (Boolean) obj.get("_isEndTurnActionPossible");
-	    	this._isRollActionPossible = (Boolean) obj.get("_isRollActionPossible");
-			for(int i=0; i<array.size(); i++) {			
-				this.players.get(i).loadStateFromString((String) array.get(i));
-			}
-	      }catch(ParseException pe){
-	          System.out.println("Error loading Ludo state from JSON.");
-	       }
+	public void loadStateFromJSON(JSONObject obj) {
+    	JSONArray array = (JSONArray) obj.get("players");
+    	this.board = new Board();
+    	this.die.loadStateFromJSON((JSONObject) obj.get("die"));
+    	this.currentPlayerIndex = ((Long) obj.get("currentPlayerIndex")).intValue();
+    	this._isEndTurnActionPossible = (Boolean) obj.get("_isEndTurnActionPossible");
+    	this._isRollActionPossible = (Boolean) obj.get("_isRollActionPossible");
+		this.setSelectedPiece(null);
+    	this.initPlayers();
+		for(int i=0; i<array.size(); i++) {			
+			this.players.get(i).loadStateFromJSON((JSONObject) array.get(i));
+		}
+		this.onStateChange.notifyAllObservers(this);
 	}
 	
 	// ===========================================
