@@ -16,6 +16,7 @@ public class UIBoardPanel extends JPanel implements MouseListener {
 	private static final long serialVersionUID = -3395052687382008316L;
 	public static final int DEFAULT_WIDTH  = 600;
     public static final int DEFAULT_HEIGHT = 840;
+    private int squareSideLength = 45;
     
     private Vector<BoardSquare> boardSquaresToDraw = new Vector<BoardSquare>();
     private Vector<PieceMovement> PieceMovement = new Vector<PieceMovement>();
@@ -36,9 +37,46 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	this.repaint();
     }
     
+    private void drawBackground(Graphics2D g2D) {
+    	int redTriangleX[] = {6 * this.squareSideLength, (int) (7.5f * this.squareSideLength), 6 * this.squareSideLength};
+        int redTriangleY[] = {6 * this.squareSideLength, (int) (7.5f * this.squareSideLength), 9 * this.squareSideLength};
+        g2D.setColor(Color.RED);
+        g2D.fillRect(this.squareSideLength * 0, this.squareSideLength * 0, this.squareSideLength * 6, this.squareSideLength * 6);
+        g2D.fillPolygon(redTriangleX, redTriangleY, 3);
+        g2D.setColor(Color.BLACK);
+        g2D.drawRect(this.squareSideLength * 0, this.squareSideLength * 0, this.squareSideLength * 6, this.squareSideLength * 6);
+        g2D.drawPolygon(redTriangleX, redTriangleY, 3);
+        
+        int greenTriangleX[] = {6 * this.squareSideLength, (int) (7.5f * this.squareSideLength), 9 * this.squareSideLength};
+        int greenTriangleY[] = {6 * this.squareSideLength, (int) (7.5f * this.squareSideLength), 6 * this.squareSideLength};
+        g2D.setColor(Color.GREEN);
+        g2D.fillRect(this.squareSideLength * 9, this.squareSideLength * 0, this.squareSideLength * 6, this.squareSideLength * 6);
+        g2D.fillPolygon(greenTriangleX, greenTriangleY, 3);
+        g2D.setColor(Color.BLACK);
+        g2D.drawRect(this.squareSideLength * 9, this.squareSideLength * 0, this.squareSideLength * 6, this.squareSideLength * 6);
+        g2D.drawPolygon(greenTriangleX, greenTriangleY, 3);
+        
+        int blueTriangleX[] = {6 * this.squareSideLength, (int) (7.5f * this.squareSideLength), 9 * this.squareSideLength};
+        int blueTriangleY[] = {9 * this.squareSideLength, (int) (7.5f * this.squareSideLength), 9 * this.squareSideLength};
+        g2D.setColor(Color.BLUE);
+        g2D.fillRect(this.squareSideLength * 0, this.squareSideLength * 9, this.squareSideLength * 6, this.squareSideLength * 6);
+        g2D.fillPolygon(blueTriangleX, blueTriangleY, 3);
+        g2D.setColor(Color.BLACK);
+        g2D.drawRect(this.squareSideLength * 0, this.squareSideLength * 9, this.squareSideLength * 6, this.squareSideLength * 6);
+        g2D.drawPolygon(blueTriangleX, blueTriangleY, 3);
+        
+        int yellowTriangleX[] = {9 * this.squareSideLength, (int) (7.5f * this.squareSideLength), 9 * this.squareSideLength};
+        int yellowTriangleY[] = {6 * this.squareSideLength, (int) (7.5f * this.squareSideLength), 9 * this.squareSideLength};
+        g2D.setColor(Color.YELLOW);
+        g2D.fillRect(this.squareSideLength * 9, this.squareSideLength * 9, this.squareSideLength * 6, this.squareSideLength * 6);
+        g2D.fillPolygon(yellowTriangleX, yellowTriangleY, 3);
+        g2D.setColor(Color.BLACK);
+        g2D.drawRect(this.squareSideLength * 9, this.squareSideLength * 9, this.squareSideLength * 6, this.squareSideLength * 6);
+        g2D.drawPolygon(yellowTriangleX, yellowTriangleY, 3);
+    }
+    
     private void drawBoardSquareBasis(Graphics2D g2D, BoardSquare boardSquare) {
     	Vector2D topLeftPosition = boardSquare.getTopLeftPosition();
-    	int sideLength = boardSquare.getSideLength();
     	Color color;
     	if(boardSquare.isShelter()) {
     		color = Color.black;
@@ -46,28 +84,34 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     		color = boardSquare.getColor();
     	}
         g2D.setColor(color);
-        g2D.fillRect(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
-        g2D.setColor(Color.BLACK);
-        g2D.drawRect(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);	
+        g2D.fillRect(	topLeftPosition.x * this.squareSideLength + 1,
+        				topLeftPosition.y * this.squareSideLength + 1,
+        				this.squareSideLength - 1,
+        				this.squareSideLength - 1);
+        if(!boardSquare.isTerminal()) {
+            g2D.setColor(Color.BLACK);
+            g2D.drawRect(	topLeftPosition.x * this.squareSideLength,
+            				topLeftPosition.y * this.squareSideLength,
+            				this.squareSideLength,
+            				this.squareSideLength);
+        }
     }
     
     private void drawBoardSquareWithOnePiece(Graphics2D g2D, BoardSquare boardSquare, Piece piece) {
     	Vector2D topLeftPosition = boardSquare.getTopLeftPosition();
-    	int sideLength = boardSquare.getSideLength();
     	Color color = piece.getPlayer().getColor();
         g2D.setColor(color);
-        g2D.fillOval(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+        g2D.fillOval(topLeftPosition.x * this.squareSideLength, topLeftPosition.y * this.squareSideLength, this.squareSideLength, this.squareSideLength);
         g2D.setColor(Color.BLACK);
-        g2D.drawOval(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+        g2D.drawOval(topLeftPosition.x * this.squareSideLength, topLeftPosition.y * this.squareSideLength, this.squareSideLength, this.squareSideLength);
 		if(Ludo.getInstance().isPieceSelected(piece)) {
             g2D.setColor(Color.WHITE);
-            g2D.drawOval(topLeftPosition.x + sideLength/4, topLeftPosition.y + sideLength/4, sideLength/2, sideLength/2);
+            g2D.drawOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/4, topLeftPosition.y * this.squareSideLength + this.squareSideLength/4, this.squareSideLength/2, this.squareSideLength/2);
 		}
     }
     
     private void drawBoardSquareWithTwoPieces(Graphics2D g2D, BoardSquare boardSquare, Piece piece1, Piece piece2) {
     	Vector2D topLeftPosition = boardSquare.getTopLeftPosition();
-    	int sideLength = boardSquare.getSideLength();
     	Color innerColor = piece1.getPlayer().getColor();
     	Color outerColor = piece2.getPlayer().getColor();
     	
@@ -76,18 +120,18 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	}
     	
         g2D.setColor(outerColor);
-        g2D.fillOval(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+        g2D.fillOval(topLeftPosition.x * this.squareSideLength, topLeftPosition.y * this.squareSideLength, this.squareSideLength, this.squareSideLength);
         
 
         g2D.setColor(innerColor);
-        g2D.fillOval(topLeftPosition.x + sideLength/8, topLeftPosition.y + sideLength/8, 3*sideLength/4, 3*sideLength/4);
+        g2D.fillOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/8, topLeftPosition.y * this.squareSideLength + this.squareSideLength/8, 3*this.squareSideLength/4, 3*this.squareSideLength/4);
         
         g2D.setColor(Color.BLACK);
-        g2D.drawOval(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+        g2D.drawOval(topLeftPosition.x * this.squareSideLength, topLeftPosition.y * this.squareSideLength, this.squareSideLength, this.squareSideLength);
         
 		if(Ludo.getInstance().isPieceSelected(piece1) || Ludo.getInstance().isPieceSelected(piece2)) {
             g2D.setColor(Color.WHITE);
-            g2D.drawOval(topLeftPosition.x + sideLength/4, topLeftPosition.y + sideLength/4, sideLength/2, sideLength/2);
+            g2D.drawOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/4, topLeftPosition.y * this.squareSideLength + this.squareSideLength/4, this.squareSideLength/2, this.squareSideLength/2);
 		}
     }
     
@@ -102,6 +146,7 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     }
     
     private void drawBoardSquares(Graphics2D g2D) {
+    	this.drawBackground(g2D);
         for(BoardSquare boardSquare: this.boardSquaresToDraw) {
         	this.drawBoardSquareBasis(g2D, boardSquare);
         	this.drawBoardSquarePieces(g2D, boardSquare);
@@ -111,19 +156,18 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     private void drawPieceMovements(Graphics2D g2D) {
         for(PieceMovement p: this.PieceMovement) {
         	Vector2D topLeftPosition = p.boardSquare.getTopLeftPosition();
-        	int sideLength = p.boardSquare.getSideLength();
             g2D.setColor(Color.BLACK);
-            g2D.drawRect(topLeftPosition.x + 2, topLeftPosition.y + 2, sideLength - 4, sideLength - 4);
+            g2D.drawRect(topLeftPosition.x * this.squareSideLength + 2, topLeftPosition.y * this.squareSideLength + 2, this.squareSideLength - 4, this.squareSideLength - 4);
             g2D.setColor(Color.WHITE);
-            g2D.drawRect(topLeftPosition.x + 1, topLeftPosition.y + 1, sideLength - 2, sideLength - 2);
+            g2D.drawRect(topLeftPosition.x * this.squareSideLength + 1, topLeftPosition.y * this.squareSideLength + 1, this.squareSideLength - 2, this.squareSideLength - 2);
             g2D.setColor(Color.BLACK);
-            g2D.drawRect(topLeftPosition.x, topLeftPosition.y, sideLength, sideLength);
+            g2D.drawRect(topLeftPosition.x * this.squareSideLength, topLeftPosition.y * this.squareSideLength, this.squareSideLength, this.squareSideLength);
             if(p.boardSquare.isShelter()) {
             	g2D.setColor(Color.WHITE);
             } else {
             	g2D.setColor(Color.BLACK);
             }
-            g2D.drawString(p.diceRoll.toString(), topLeftPosition.x + 3, topLeftPosition.y + sideLength - 3);
+            g2D.drawString(p.diceRoll.toString(), topLeftPosition.x * this.squareSideLength + 3, topLeftPosition.y * this.squareSideLength + this.squareSideLength - 3);
         }
     }
 
@@ -141,10 +185,10 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	int x = e.getX();
 		int y = e.getY();
 		for(BoardSquare b: this.boardSquaresToDraw) {
-			if(	x > b.topLeftPosition.x &&
-				x < b.topLeftPosition.x + b.sideLength &&
-				y > b.topLeftPosition.y &&
-				y < b.topLeftPosition.y + b.sideLength ) {
+			if(	x > b.topLeftPosition.x * this.squareSideLength &&
+				x < b.topLeftPosition.x * this.squareSideLength + this.squareSideLength &&
+				y > b.topLeftPosition.y * this.squareSideLength &&
+				y < b.topLeftPosition.y * this.squareSideLength + this.squareSideLength ) {
 				Ludo.getInstance().clickBoardSquare(b);
 			}
 		}

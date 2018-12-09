@@ -14,7 +14,6 @@ public class Board {
     public Vector<Vector<BoardSquare>> yellowPiecesTracks;
     public Vector<Vector<BoardSquare>> bluePiecesTracks;
     public int trackLength;
-    private int squareSideLength = 40;
     
     private Vector<BoardSquare> buildVectorWithIntervalIncluding(int x, int y) {
     	Vector<BoardSquare> v = new Vector<BoardSquare>();
@@ -108,8 +107,7 @@ public class Board {
         for(int y=0; y<15; y++) {
         	for(int x=0; x<15; x++) {
         		if(boardPositions[y][x] != -1) {
-            		this.squares.get(boardPositions[y][x]).setPosition(new Vector2D(x * squareSideLength, y * squareSideLength));
-            		this.squares.get(boardPositions[y][x]).setSideLength(this.squareSideLength);
+            		this.squares.get(boardPositions[y][x]).setPosition(new Vector2D(x, y));
         		}
         	}
         }
