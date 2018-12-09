@@ -1,16 +1,16 @@
 package com.inf1636_1611854_1310451.game;
 import java.awt.Color;
-import java.lang.reflect.Array;
 import java.util.Vector;
 
-import com.inf1636_1611854_1310451.util.Pair;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.inf1636_1611854_1310451.util.Savable;
 import com.inf1636_1611854_1310451.util.Subject;
-import com.inf1636_1611854_1310451.util.SubjectVoid;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
-public class Ludo {
+public class Ludo implements Savable {
 
 	private Board board = new Board();
 	private Die die = new Die();
@@ -42,14 +42,50 @@ public class Ludo {
 	private Ludo() {
 		this.players.add(new Player(Color.RED, board.redPiecesTracks, "RED"));
 		this.players.add(new Player(Color.GREEN, board.greenPiecesTracks, "GREEN"));
-		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks, "BLUE"));
 		this.players.add(new Player(Color.YELLOW, board.yellowPiecesTracks, "YELLOW"));
+		this.players.add(new Player(Color.BLUE, board.bluePiecesTracks, "BLUE"));
 
     	this.die.onStateChange.attach((Die die) -> { this.onDieStateChange(die); });
 	}
 	
 	private void onDieStateChange(Die die) {
 		this.onStateChange.notifyAllObservers(this);
+	}
+	
+	// ===========================================
+	// SAVE AND LOAD
+	// ===========================================
+	
+	@SuppressWarnings("unchecked")
+	public String saveStateToString() {
+		JSONObject obj = new JSONObject();
+		JSONArray array = new JSONArray();
+		for(Player player: this.players) {			
+			array.add(player.saveStateToString());
+		}
+		obj.put("players", array);
+		obj.put("die", this.die.saveStateToString());
+		obj.put("currentPlayerIndex", this.currentPlayerIndex);
+		obj.put("_isEndTurnActionPossible", this._isEndTurnActionPossible);
+		obj.put("_isRollActionPossible", this._isRollActionPossible);
+		return obj.toJSONString();
+	}
+	
+	public void loadStateFromString(String str) {
+	      JSONParser parser = new JSONParser();
+	      try{
+	    	JSONObject obj = (JSONObject) parser.parse(str);
+	    	JSONArray array = (JSONArray) obj.get("players");
+	    	this.die.loadStateFromString((String) obj.get("die"));
+	    	this.currentPlayerIndex = (Integer) obj.get("currentPlayerIndex");
+	    	this._isEndTurnActionPossible = (Boolean) obj.get("_isEndTurnActionPossible");
+	    	this._isRollActionPossible = (Boolean) obj.get("_isRollActionPossible");
+			for(int i=0; i<array.size(); i++) {			
+				this.players.get(i).loadStateFromString((String) array.get(i));
+			}
+	      }catch(ParseException pe){
+	          System.out.println("Error loading Ludo state from JSON.");
+	       }
 	}
 	
 	// ===========================================
@@ -100,17 +136,6 @@ public class Ludo {
 	// ACCESS METHODS
 	// ===========================================
 	
-	// -------------- private ------------
-	private Vector<Piece> getPiecesArray() {
-		Vector<Piece> piecesArray = new Vector<Piece>();
-		for(Player player: this.players) {
-			for(Piece piece: player.getPieces()) {
-				piecesArray.add(piece);
-			}
-		}
-		return piecesArray;
-	}
-	
 	//--------------- public -------------
 	
 	public Vector<BoardSquare> getBoardSquareArray() {
@@ -133,21 +158,10 @@ public class Ludo {
 		return this.die;
 	}
 	
-	public Vector<PiecePositioningInfo> getPiecesInformation() {
-		Vector<PiecePositioningInfo> piecesInformation = new Vector<PiecePositioningInfo>();
-		for(Piece piece: this.getPiecesArray()) {
-			PiecePositioningInfo info = new PiecePositioningInfo(piece,
-					piece.getCurrentBoardSquare(),
-					piece.getPlayer());
-			piecesInformation.add(info);
-		}
-		return piecesInformation;
-	}
-	
-	public Vector<PossiblePieceMovement> getPlacesGivenPieceCanMove(Piece p) {
-		Vector<PossiblePieceMovement> vec = new Vector<PossiblePieceMovement>();
-		Vector<PossiblePieceMovement> allMoves = this.allMoves(this.getCurrentPlayer());
-		for(PossiblePieceMovement move: allMoves) {
+	public Vector<PieceMovement> getPlacesGivenPieceCanMove(Piece p) {
+		Vector<PieceMovement> vec = new Vector<PieceMovement>();
+		Vector<PieceMovement> allMoves = this.allMoves(this.getCurrentPlayer());
+		for(PieceMovement move: allMoves) {
 			if(move.piece == p) {
 				vec.add(move);
 			}
@@ -163,13 +177,13 @@ public class Ludo {
 		this.setSelectedPiece(null);
 	}
 	
-	private void executeMove(PossiblePieceMovement move) {
+	private void executeMove(PieceMovement move) {
 		boolean capture = move.isACaptureMovement;
 		if( capture ) {
 			// There is exactly one piece that will be captured at move.boardSquare
 			Piece p = (move.boardSquare.getPieces().firstElement() );
 			BoardSquare sanctuary = p.getPieceTrack().get(0);
-			PossiblePieceMovement backToSanctuary = new PossiblePieceMovement( p.getPlayer(), p, sanctuary, false, 0);
+			PieceMovement backToSanctuary = new PieceMovement( p.getPlayer(), p, sanctuary, false, 0);
 			executeMove( backToSanctuary );
 		}
 		move.piece.moveToBoardSquare(move.boardSquare);
@@ -194,10 +208,10 @@ public class Ludo {
 			return;
 		}
 		
-		Vector<PossiblePieceMovement> moves = this.getPlacesGivenPieceCanMove(this.getSelectedPiece());
+		Vector<PieceMovement> moves = this.getPlacesGivenPieceCanMove(this.getSelectedPiece());
 		
 		// prioritize movement
-		for(PossiblePieceMovement move: moves) {
+		for(PieceMovement move: moves) {
 			if(move.boardSquare == b && this.isPieceSelected(move.piece)) {
 				this.executeMove(move);
 				return;
@@ -230,7 +244,7 @@ public class Ludo {
 		if(this.isRollActionPossible()) {
 			this.setIsRollActionPossible(false);
 			this.die.roll();
-			Vector<PossiblePieceMovement> allPossibleMoves = this.allMoves(this.getCurrentPlayer());
+			Vector<PieceMovement> allPossibleMoves = this.allMoves(this.getCurrentPlayer());
 			if(allPossibleMoves.size() == 0) {
 				this.setIsEndTurnActionPossible(true);
 			}
@@ -240,29 +254,27 @@ public class Ludo {
 	
 	// ===========================================
 
-	private Vector<PossiblePieceMovement> allMoves(Player player) {
+	private Vector<PieceMovement> allMoves(Player player) {
 		Die die = this.getDie();
-		Vector<PossiblePieceMovement> allPossibleMoves = new Vector<PossiblePieceMovement>();
-		Vector<Piece> pieces = player.getPieces();
 		
 		if(die.hasBeenUsed()) {
-			return new Vector<PossiblePieceMovement>();
+			return new Vector<PieceMovement>();
 		}
 		
 		if(die.getValue() == 5) {
 			Vector<Piece> eligeblePieces = player.getPiecesEligebleToTakeOutOfSanctuary();
 			if(eligeblePieces.size() > 0) {
-				return PossiblePieceMovement.generateMovementsFromArray(eligeblePieces, 1, die.getValue());
+				return PieceMovement.generateMovementsFromArray(eligeblePieces, 1, die.getValue());
 			}
 		}
 		if(die.getValue() == 6) {
 			Vector<Piece> eligeblePieces = player.getBarrierPiecesThatCanMoveAGivenNumber(6);
 			if(eligeblePieces.size() > 0) {
-				return PossiblePieceMovement.generateMovementsFromArray(eligeblePieces, die.getValue(), die.getValue());
+				return PieceMovement.generateMovementsFromArray(eligeblePieces, die.getValue(), die.getValue());
 			}
 		}
 		Vector<Piece> eligeblePieces = player.getPiecesThatCanMoveAGivenNumber(die.getValue());
-		return PossiblePieceMovement.generateMovementsFromArray(eligeblePieces, die.getValue(), die.getValue());
+		return PieceMovement.generateMovementsFromArray(eligeblePieces, die.getValue(), die.getValue());
 	}
 	
 	public void startGame() {
@@ -272,6 +284,10 @@ public class Ludo {
 			firstPiece.moveToBoardSquare(firstPiece.getBoardSquareInNumMoves(1));
 		}
 		this.setIsRollActionPossible(true);
+	}
+	
+	public void getSaveStateAsString() {
+		
 	}
 
 }

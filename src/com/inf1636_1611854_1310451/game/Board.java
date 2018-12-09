@@ -1,8 +1,5 @@
 package com.inf1636_1611854_1310451.game;
 import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
 
 import com.inf1636_1611854_1310451.util.Vector2D;
 

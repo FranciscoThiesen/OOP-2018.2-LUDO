@@ -3,7 +3,14 @@ import java.awt.*;
 //import javax.swing.*;
 import java.util.*;
 
-public class Player {
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.inf1636_1611854_1310451.util.Savable;
+
+public class Player implements Savable {
 	private Color color;
 	private Vector<Piece> pieces;
 	private String name;
@@ -16,6 +23,32 @@ public class Player {
 		this.pieces.add(new Piece(this, tracks.get(2) ) );
 		this.pieces.add(new Piece(this, tracks.get(3) ) );
 		this.name = name;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String saveStateToString() {
+		JSONObject obj = new JSONObject();
+		JSONArray array = new JSONArray();
+		for(Piece piece: this.pieces) {			
+			array.add(piece.saveStateToString());
+		}
+		obj.put("name", this.name);
+		obj.put("pieces", array);
+		return obj.toJSONString();
+	}
+	
+	public void loadStateFromString(String str) {
+	      JSONParser parser = new JSONParser();
+	      try{
+	    	JSONObject obj = (JSONObject) parser.parse(str);
+	    	JSONArray array = (JSONArray) obj.get("pieces");
+			for(int i=0; i<array.size(); i++) {			
+				this.pieces.get(i).loadStateFromString((String) array.get(i));
+			}
+	    	this.name = (String) obj.get("name");
+	      }catch(ParseException pe){
+	          System.out.println("Error loading Player state from JSON.");
+	       }
 	}
 
 	public Vector<Piece> getPieces()

@@ -1,16 +1,11 @@
 package com.inf1636_1611854_1310451.ui;
 import java.awt.*;
-import java.awt.event.*;
 
 import javax.swing.*;
 
 import com.inf1636_1611854_1310451.game.BoardSquare;
-import com.inf1636_1611854_1310451.game.Die;
 import com.inf1636_1611854_1310451.game.Ludo;
-import com.inf1636_1611854_1310451.game.Piece;
-import com.inf1636_1611854_1310451.game.PiecePositioningInfo;
-import com.inf1636_1611854_1310451.game.Player;
-import com.inf1636_1611854_1310451.game.PossiblePieceMovement;
+import com.inf1636_1611854_1310451.game.PieceMovement;
 import com.inf1636_1611854_1310451.util.Subject;
 import com.inf1636_1611854_1310451.util.SubjectVoid;
 
@@ -26,7 +21,6 @@ public class UIHandler extends JFrame {
     
     private UIBoardPanel boardPanel;
     private UIControlsPanel controlsPanel;
-    private UIAuxiliarPanel auxiliarPanel;
 	public SubjectVoid onDieRollButtonClick = new SubjectVoid();
 	public SubjectVoid onNextTurnButtonClick = new SubjectVoid();
     public Subject<BoardSquare> onBoardSquareClick = new Subject<BoardSquare>();
@@ -44,10 +38,7 @@ public class UIHandler extends JFrame {
         this.setResizable(true);
         
         this.boardPanel = new UIBoardPanel();
-        this.boardPanel.onBoardSquareClick.attach((BoardSquare b) -> { this.onBoardSquareClick.notifyAllObservers(b); });
         this.controlsPanel = new UIControlsPanel();
-        this.controlsPanel.onDieRollButtonClick.attach(() -> { this.onDieRollButtonClick.notifyAllObservers(); });
-        this.controlsPanel.onNextTurnButtonClick.attach(() -> { this.onNextTurnButtonClick.notifyAllObservers(); });
         
         // -------------------------
         
@@ -57,8 +48,9 @@ public class UIHandler extends JFrame {
         this.add(this.mainPanel);
 
         // -------------------------
-        this.boardPanel.updatePiecesInfo(Ludo.getInstance().getPiecesInformation());
     	this.boardPanel.updateBoardSquares(Ludo.getInstance().getBoardSquareArray());
+    	
+    	Ludo.getInstance().onStateChange.attach((Ludo ludoInstance) -> { this.onGameStateChange(); });
     	
     	this.onGameStateChange();
     	this.setVisible(true);
@@ -67,14 +59,13 @@ public class UIHandler extends JFrame {
     public void onGameStateChange() {
     	Ludo ludo = Ludo.getInstance();
     	this.controlsPanel.changePlayer(ludo.getCurrentPlayer());
-    	this.boardPanel.updatePiecesInfo(ludo.getPiecesInformation());
     	this.controlsPanel.updateDie(ludo.getDie());
     	this.controlsPanel.updateIfIsAllowedToRollDie(ludo.isRollActionPossible());
     	this.controlsPanel.updateIfIsAllowedToEndTurn(ludo.isEndTurnActionPossible());
     	if(ludo.hasPieceSelected()) {    		
     		this.boardPanel.updatePossibleMovements(ludo.getPlacesGivenPieceCanMove(ludo.getSelectedPiece()));
     	} else {
-        	this.boardPanel.updatePossibleMovements(new Vector<PossiblePieceMovement>());
+        	this.boardPanel.updatePossibleMovements(new Vector<PieceMovement>());
     	}
     }
  

@@ -1,9 +1,13 @@
 package com.inf1636_1611854_1310451.game;
-import java.util.*;
-import java.awt.Color;
-import java.math.*;
 
-public class Piece {
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
+
+import java.util.*;
+import com.inf1636_1611854_1310451.util.Savable;
+
+public class Piece implements Savable {
 	private Player player;
 	private int pathIndex;
 	private Vector<BoardSquare> pieceTrack;
@@ -11,8 +15,25 @@ public class Piece {
 	public Piece(Player player, Vector<BoardSquare> track) {
 		this.player = player;
 		this.pieceTrack = track;
-		this.setPathIndex(0);
+		this.pathIndex = 0;
 		this.getCurrentBoardSquare().addPiece(this);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String saveStateToString() {
+		JSONObject obj = new JSONObject();
+		obj.put("pathIndex", this.pathIndex);
+		return obj.toJSONString();
+	}
+	
+	public void loadStateFromString(String str) {
+	      JSONParser parser = new JSONParser();
+	      try{
+		      JSONObject obj = (JSONObject) parser.parse(str);
+		      this.setPathIndex((Integer) obj.get("pathIndex"));
+	      }catch(ParseException pe){
+	          System.out.println("Error loading Piece state from JSON.");
+	       }
 	}
 
 	public int getPathIndex() {
@@ -28,7 +49,9 @@ public class Piece {
 	}
 	
 	public void setPathIndex(int i) {
+		this.getCurrentBoardSquare().removePiece(this);
 		this.pathIndex = i;
+		this.getCurrentBoardSquare().addPiece(this);
 	}
 	
 	public BoardSquare getBoardSquareInNumMoves(int numMoves) {
@@ -43,9 +66,7 @@ public class Piece {
 		Vector<BoardSquare> pieceTrack = this.getPieceTrack();
 		for(int i=0; i<pieceTrack.size(); i++) {
 			if(pieceTrack.get(i) == boardSquare) {
-				this.getCurrentBoardSquare().removePiece(this);
 				this.setPathIndex(i);
-				this.getCurrentBoardSquare().addPiece(this);
 			}
 		}
 	}

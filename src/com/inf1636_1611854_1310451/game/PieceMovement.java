@@ -2,14 +2,14 @@ package com.inf1636_1611854_1310451.game;
 
 import java.util.*;
 
-public class PossiblePieceMovement {
+public class PieceMovement {
 	public Player player;
 	public Piece piece;
 	public BoardSquare boardSquare;
 	public boolean isACaptureMovement;
 	public Integer diceRoll;
 	
-	public PossiblePieceMovement(	Player player,
+	public PieceMovement(	Player player,
 									Piece piece,
 									BoardSquare boardSquare,
 									boolean isACaptureMovement,
@@ -21,13 +21,13 @@ public class PossiblePieceMovement {
 		this.diceRoll = diceRoll;
 	}
 	
-	public static Vector<PossiblePieceMovement> generateMovementsFromArray(Vector<Piece> pieces,
+	public static Vector<PieceMovement> generateMovementsFromArray(Vector<Piece> pieces,
 																			int numMovements,
 																			int diceRoll) {
-		Vector<PossiblePieceMovement> generatedArray = new Vector<PossiblePieceMovement>();
+		Vector<PieceMovement> generatedArray = new Vector<PieceMovement>();
 		for(Piece piece: pieces) {
 			BoardSquare targetBoardSquare = piece.getBoardSquareInNumMoves(numMovements);
-			generatedArray.add(new PossiblePieceMovement(piece.getPlayer(),
+			generatedArray.add(new PieceMovement(piece.getPlayer(),
 														 piece,
 														 targetBoardSquare,
 														 piece.makesCapture(targetBoardSquare),

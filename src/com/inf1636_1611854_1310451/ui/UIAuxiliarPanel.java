@@ -1,10 +1,8 @@
 package com.inf1636_1611854_1310451.ui;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
 import javax.imageio.*;
 import java.io.IOException;
 
@@ -12,7 +10,8 @@ import com.inf1636_1611854_1310451.game.Die;
 
 public class UIAuxiliarPanel extends JPanel {
 
-    private Die die = new Die();
+	private static final long serialVersionUID = -5686039795149641383L;
+	private Die die = new Die();
     private BufferedImage[] diePictures = new BufferedImage[6];
 
     public UIAuxiliarPanel()
