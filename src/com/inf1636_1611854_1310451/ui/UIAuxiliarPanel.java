@@ -7,6 +7,7 @@ import javax.imageio.*;
 import java.io.IOException;
 
 import com.inf1636_1611854_1310451.game.Die;
+import com.inf1636_1611854_1310451.game.Ludo;
 
 public class UIAuxiliarPanel extends JPanel {
 
@@ -39,8 +40,10 @@ public class UIAuxiliarPanel extends JPanel {
     }
 
     private void drawDie(Graphics2D g2D) {
+        g2D.setColor(Ludo.getInstance().getCurrentPlayer().getColor());
+        g2D.fillRect(0, 0, 150, 150);
     	if(!this.die.hasBeenUsed()) {
-            g2D.drawImage( this.diePictures[ this.die.getValue() - 1], 0, 0, this);
+            g2D.drawImage( this.diePictures[ this.die.getValue() - 1], 25, 25, this);
     	}
     }
 

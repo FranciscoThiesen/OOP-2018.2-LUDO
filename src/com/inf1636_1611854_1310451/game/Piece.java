@@ -1,8 +1,6 @@
 package com.inf1636_1611854_1310451.game;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import org.json.simple.parser.JSONParser;
 
 import java.util.*;
 import com.inf1636_1611854_1310451.util.Savable;

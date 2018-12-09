@@ -1,20 +1,18 @@
 package com.inf1636_1611854_1310451.ui;
+import java.awt.Component;
 import java.awt.event.*;
 
 import javax.swing.*;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import com.inf1636_1611854_1310451.game.Die;
 import com.inf1636_1611854_1310451.game.Ludo;
-import com.inf1636_1611854_1310451.game.Piece;
 import com.inf1636_1611854_1310451.game.Player;
 import com.inf1636_1611854_1310451.util.SubjectVoid;
+
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Scanner;
 
@@ -34,7 +32,7 @@ public class UIControlsPanel extends JPanel {
 	
 	public UIControlsPanel() {
         super();
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
         this.currentPlayerLabel = new JLabel();
         this.currentDieLabel = new JLabel();
@@ -42,7 +40,7 @@ public class UIControlsPanel extends JPanel {
 
         UIControlsPanel other = this;
         
-        this.rollDieButton = new JButton("Roll");
+        this.rollDieButton = new JButton("Roll Die");
         this.rollDieButton.addActionListener(new ActionListener()
         {
           public void actionPerformed(ActionEvent e){ other.onClickRollButton(); }
@@ -66,48 +64,25 @@ public class UIControlsPanel extends JPanel {
           public void actionPerformed(ActionEvent e){ other.onClickLoadButton(); }
         });
          
-        this.add(this.currentPlayerLabel);
-        this.add(this.currentDieLabel);
+        // this.add(this.currentPlayerLabel);
+        // this.add(this.currentDieLabel);
+        
+        this.rollDieButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.nextTurnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.auxiliarPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.saveGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.loadGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         this.add(this.rollDieButton);
         this.add(this.nextTurnButton);
+        this.add(this.auxiliarPanel);
         this.add(this.saveGameButton);
         this.add(this.loadGameButton);
-        this.add(this.auxiliarPanel);
 	}
 	
 	public void onClickRollButton() {
 		Ludo.getInstance().rollDie();
 	}
-	
-	
-	/*
-	 * 
-	 	@SuppressWarnings("unchecked")
-	public JSONObject saveStateToJSON() {
-		JSONObject obj = new JSONObject();
-		JSONArray array = new JSONArray();
-		for(Piece piece: this.pieces) {			
-			array.add(piece.saveStateToString());
-		}
-		obj.put("name", this.name);
-		obj.put("pieces", array);
-		return obj.toJSONString();
-	}
-	
-	public void loadStateFromJSON(JSONObject obj) {
-	      JSONParser parser = new JSONParser();
-	      try{
-	    	JSONObject obj = (JSONObject) parser.parse(str);
-	    	JSONArray array = (JSONArray) obj.get("pieces");
-			for(int i=0; i<array.size(); i++) {			
-				this.pieces.get(i).loadStateFromString((String) array.get(i));
-			}
-	    	this.name = (String) obj.get("name");
-	      }catch(ParseException pe){
-	          System.out.println("Error loading Player state from JSON.");
-	       }
-	}* 
-	 */
 	
 	public void onClickSaveButton() {
 		try {

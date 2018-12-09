@@ -86,21 +86,6 @@ public class BoardSquare {
     	return this.piecesInThisSquare;
     }
     
-//    public boolean hasBarrierOfPlayer(Player player) {
-//    	int count = 0;
-//		for(Piece piece : this.getPieces() ) {
-//			if(piece.getPlayer() == player) {
-//				count += 1;
-//			}
-//		}
-//		if(count >= 2) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-//    }
-    
-    
     public Vector<Player> getPlayersWithBarrierInThisSquare() {
     	Vector<Player> playersThatHaveOnePiece = new Vector<Player>();
     	Vector<Player> playersThatHaveTwoPiecesOrMore = new Vector<Player>();
