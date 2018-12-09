@@ -106,7 +106,12 @@ public class Piece {
 	}
 	
 	public boolean isEligebleToExitSanctuary() {
-		return this.isInSanctuary() && this.isValidMove(1);
+		if( this.isInSanctuary() ) {
+			BoardSquare nxt = this.getBoardSquareInNumMoves(1);
+			if(nxt.hasPieceOfSameColor() == true) return false;
+			return this.isValidMove(1);
+		}
+		return false;
 	}
 	
 	public boolean isPartOfABarrier() {
