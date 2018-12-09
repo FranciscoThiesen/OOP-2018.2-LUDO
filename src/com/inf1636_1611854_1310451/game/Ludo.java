@@ -164,9 +164,18 @@ public class Ludo {
 	}
 	
 	private void executeMove(PossiblePieceMovement move) {
+		boolean capture = move.isACaptureMovement;
+		if( capture ) {
+			// There is exactly one piece that will be captured at move.boardSquare
+			Piece p = (move.boardSquare.getPieces().firstElement() );
+			BoardSquare sanctuary = p.getPieceTrack().get(0);
+			PossiblePieceMovement backToSanctuary = new PossiblePieceMovement( p.getPlayer(), p, sanctuary, false, 0);
+			executeMove( backToSanctuary );
+		}
 		move.piece.moveToBoardSquare(move.boardSquare);
 		this.die.use();
 		this.unselectPiece();
+
 		if(die.getValue() == 6) {
 			this.setIsRollActionPossible(true);
 		} else {
