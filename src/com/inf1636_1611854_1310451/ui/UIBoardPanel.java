@@ -15,8 +15,8 @@ public class UIBoardPanel extends JPanel implements MouseListener {
 	
 	private static final long serialVersionUID = -3395052687382008316L;
 	public static final int DEFAULT_WIDTH  = 600;
-    public static final int DEFAULT_HEIGHT = 840;
-    private int squareSideLength = 45;
+    public static final int DEFAULT_HEIGHT = 900;
+    private int squareSideLength = 50;
     
     private Vector<BoardSquare> boardSquaresToDraw = new Vector<BoardSquare>();
     private Vector<PieceMovement> PieceMovement = new Vector<PieceMovement>();
@@ -104,7 +104,11 @@ public class UIBoardPanel extends JPanel implements MouseListener {
         g2D.fillOval(topLeftPosition.x * this.squareSideLength, topLeftPosition.y * this.squareSideLength, this.squareSideLength, this.squareSideLength);
         g2D.setColor(Color.BLACK);
         g2D.drawOval(topLeftPosition.x * this.squareSideLength, topLeftPosition.y * this.squareSideLength, this.squareSideLength, this.squareSideLength);
+        g2D.setColor(Color.WHITE);
+        g2D.drawOval(topLeftPosition.x * this.squareSideLength + 1, topLeftPosition.y * this.squareSideLength + 1, this.squareSideLength - 2, this.squareSideLength - 2);
 		if(Ludo.getInstance().isPieceSelected(piece)) {
+			g2D.setColor(Color.BLACK);
+            g2D.drawOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/4 + 1, topLeftPosition.y * this.squareSideLength + this.squareSideLength/4 + 1, this.squareSideLength/2 - 2, this.squareSideLength/2 - 2);
             g2D.setColor(Color.WHITE);
             g2D.drawOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/4, topLeftPosition.y * this.squareSideLength + this.squareSideLength/4, this.squareSideLength/2, this.squareSideLength/2);
 		}
@@ -124,12 +128,16 @@ public class UIBoardPanel extends JPanel implements MouseListener {
         
 
         g2D.setColor(innerColor);
-        g2D.fillOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/8, topLeftPosition.y * this.squareSideLength + this.squareSideLength/8, 3*this.squareSideLength/4, 3*this.squareSideLength/4);
+        g2D.fillOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/8, topLeftPosition.y * this.squareSideLength + this.squareSideLength/8, 6*this.squareSideLength/8, 6*this.squareSideLength/8);
         
         g2D.setColor(Color.BLACK);
         g2D.drawOval(topLeftPosition.x * this.squareSideLength, topLeftPosition.y * this.squareSideLength, this.squareSideLength, this.squareSideLength);
+        g2D.setColor(Color.WHITE);
+        g2D.drawOval(topLeftPosition.x * this.squareSideLength + 1, topLeftPosition.y * this.squareSideLength + 1, this.squareSideLength - 2, this.squareSideLength - 2);
         
 		if(Ludo.getInstance().isPieceSelected(piece1) || Ludo.getInstance().isPieceSelected(piece2)) {
+			g2D.setColor(Color.BLACK);
+            g2D.drawOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/4 + 1, topLeftPosition.y * this.squareSideLength + this.squareSideLength/4 + 1, this.squareSideLength/2 - 2, this.squareSideLength/2 - 2);
             g2D.setColor(Color.WHITE);
             g2D.drawOval(topLeftPosition.x * this.squareSideLength + this.squareSideLength/4, topLeftPosition.y * this.squareSideLength + this.squareSideLength/4, this.squareSideLength/2, this.squareSideLength/2);
 		}
@@ -140,7 +148,7 @@ public class UIBoardPanel extends JPanel implements MouseListener {
     	if(pieces.size() == 1) {
         	this.drawBoardSquareWithOnePiece(g2D, boardSquare, pieces.get(0));
     	}
-    	if(pieces.size() == 2) {
+    	if(pieces.size() >= 2) {
         	this.drawBoardSquareWithTwoPieces(g2D, boardSquare, pieces.get(0), pieces.get(1));
     	}
     }

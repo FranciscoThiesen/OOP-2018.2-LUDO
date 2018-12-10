@@ -27,6 +27,10 @@ public class Piece implements Savable {
 	public void loadStateFromJSON(JSONObject obj) {
 		this.setPathIndex(((Long) obj.get("pathIndex")).intValue());
 	}
+	
+	public void moveToStart() {
+		this.moveToBoardSquare(this.pieceTrack.get(0));
+	}
 
 	public int getPathIndex() {
 		return this.pathIndex;
@@ -135,6 +139,10 @@ public class Piece implements Savable {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isInTerminalPosition() {
+		return this.getPathIndex() == this.pieceTrack.size() - 1;
 	}
 	
 }

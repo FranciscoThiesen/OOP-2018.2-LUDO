@@ -1,11 +1,13 @@
 package com.inf1636_1611854_1310451.ui;
 import java.awt.*;
+import javax.swing.JOptionPane;
 
 import javax.swing.*;
 
 import com.inf1636_1611854_1310451.game.BoardSquare;
 import com.inf1636_1611854_1310451.game.Ludo;
 import com.inf1636_1611854_1310451.game.PieceMovement;
+import com.inf1636_1611854_1310451.game.Player;
 import com.inf1636_1611854_1310451.util.Subject;
 import com.inf1636_1611854_1310451.util.SubjectVoid;
 
@@ -49,9 +51,14 @@ public class UIHandler extends JFrame {
 
         // -------------------------
     	Ludo.getInstance().onStateChange.attach((Ludo ludoInstance) -> { this.onGameStateChange(); });
+    	Ludo.getInstance().onPlayerWin.attach((Player player) -> { this.notifyPlayerVictory(player); });
     	
     	this.onGameStateChange();
     	this.setVisible(true);
+    }
+    
+    public void notifyPlayerVictory(Player player) {
+    	JOptionPane.showMessageDialog(this, "The player " + player.getName() + " has reached the end!");
     }
     
     public void onGameStateChange() {

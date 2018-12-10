@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.inf1636_1611854_1310451.util.Savable;
 import com.inf1636_1611854_1310451.util.Subject;
@@ -17,8 +19,11 @@ public class Ludo implements Savable {
 	private Piece selectedPiece;
 	private boolean _isEndTurnActionPossible = false;
 	private boolean _isRollActionPossible = false;
+	private int numConsecutiveTurns = 1;
+	private String initialState;
 	
 	public Subject<Ludo> onStateChange = new Subject<Ludo>();
+	public Subject<Player> onPlayerWin = new Subject<Player>();
 
 	// ===========================================
 	// SINGLETON DESIGN PATTERN
@@ -39,7 +44,7 @@ public class Ludo implements Savable {
 
 	private Ludo() {
 		this.initPlayers();
-
+		this.initialState = this.saveStateToJSON().toJSONString();
     	this.die.onStateChange.attach((Die die) -> { this.onDieStateChange(die); });
 	}
 	
@@ -69,6 +74,7 @@ public class Ludo implements Savable {
 		obj.put("players", array);
 		obj.put("die", this.die.saveStateToJSON());
 		obj.put("currentPlayerIndex", this.currentPlayerIndex);
+		obj.put("numConsecutiveTurns", this.numConsecutiveTurns);
 		obj.put("_isEndTurnActionPossible", this._isEndTurnActionPossible);
 		obj.put("_isRollActionPossible", this._isRollActionPossible);
 		return obj;
@@ -79,6 +85,7 @@ public class Ludo implements Savable {
     	this.board = new Board();
     	this.die.loadStateFromJSON((JSONObject) obj.get("die"));
     	this.currentPlayerIndex = ((Long) obj.get("currentPlayerIndex")).intValue();
+    	this.numConsecutiveTurns = ((Long) obj.get("numConsecutiveTurns")).intValue();
     	this._isEndTurnActionPossible = (Boolean) obj.get("_isEndTurnActionPossible");
     	this._isRollActionPossible = (Boolean) obj.get("_isRollActionPossible");
 		this.setSelectedPiece(null);
@@ -181,20 +188,46 @@ public class Ludo implements Savable {
 	private void executeMove(PieceMovement move) {
 		boolean capture = move.isACaptureMovement;
 		if( capture ) {
-			// There is exactly one piece that will be captured at move.boardSquare
-			Piece p = (move.boardSquare.getPieces().firstElement() );
-			BoardSquare sanctuary = p.getPieceTrack().get(0);
-			PieceMovement backToSanctuary = new PieceMovement( p.getPlayer(), p, sanctuary, false, 0);
-			executeMove( backToSanctuary );
+			move.boardSquare.moveAllPiecesToStart();
 		}
 		move.piece.moveToBoardSquare(move.boardSquare);
 		this.die.use();
 		this.unselectPiece();
 
 		if(die.getValue() == 6) {
-			this.setIsRollActionPossible(true);
+			if(this.numConsecutiveTurns >= 3) {
+				this.setIsEndTurnActionPossible(true);
+			} else {
+				this.numConsecutiveTurns += 1;
+				this.setIsRollActionPossible(true);
+			}
 		} else {
 			this.setIsEndTurnActionPossible(true);
+		}
+		
+		boolean hasAPlayerWon = false;
+		Player playerWon = null;
+		for(Player player: this.players) {
+			if(player.hasWon()) {
+				playerWon = player;
+				hasAPlayerWon = true;
+			}
+		}
+		if(hasAPlayerWon) {
+			this.onPlayerWin.notifyAllObservers(playerWon);
+			this.players.remove(playerWon);
+			if(this.players.size() == 1) {
+				this.onPlayerWin.notifyAllObservers(this.players.get(0));
+				try {
+					JSONParser parser = new JSONParser();
+					JSONObject obj;
+					obj = (JSONObject) parser.parse(this.initialState);
+					this.loadStateFromJSON(obj);
+					this.startGame();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
@@ -236,7 +269,9 @@ public class Ludo implements Savable {
 	}
 	
 	public void endTurn() {
-		this.setCurrentPlayerIndex((this.getCurrentPlayerIndex() + 1) % 4);
+		this.setCurrentPlayerIndex((this.getCurrentPlayerIndex() + 1) % this.players.size());
+		this.die.reset();
+		this.numConsecutiveTurns = 1;
 		this.setIsRollActionPossible(true);
 		this.setIsEndTurnActionPossible(false);
 	}
@@ -248,6 +283,25 @@ public class Ludo implements Savable {
 			Vector<PieceMovement> allPossibleMoves = this.allMoves(this.getCurrentPlayer());
 			if(allPossibleMoves.size() == 0) {
 				this.setIsEndTurnActionPossible(true);
+			} else if(allPossibleMoves.size() == 1) {
+				this.executeMove(allPossibleMoves.get(0));
+			} else {
+				boolean hasMoveOutsideSanctuary = false;
+				boolean hasMoveOutsideBarrier = false;
+				for(PieceMovement move: allPossibleMoves) {
+					if(!move.piece.isInSanctuary()) {
+						hasMoveOutsideSanctuary = true;
+					}
+					if(!move.piece.isPartOfABarrier()) {
+						hasMoveOutsideBarrier = true;
+					}
+				}
+				if(!hasMoveOutsideSanctuary) {
+					this.executeMove(allPossibleMoves.get(0));
+				}
+				if(!hasMoveOutsideSanctuary) {
+					this.executeMove(allPossibleMoves.get(0));
+				}
 			}
 		}
 		

@@ -83,4 +83,13 @@ public class Player implements Savable {
 		}
 		return eligleblePieces;
 	}
+
+	public boolean hasWon() {
+		for(Piece piece: this.getPieces()) {
+			if(!piece.isInTerminalPosition()) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

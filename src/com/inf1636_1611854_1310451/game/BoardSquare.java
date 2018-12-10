@@ -124,4 +124,14 @@ public class BoardSquare {
     public Color getColor() {
     	return this.color;
     }
+    
+    public void moveAllPiecesToStart() {
+    	Vector<Piece> pieces = new Vector<Piece>();
+    	for(Piece piece: this.piecesInThisSquare) {
+    		pieces.add(piece);
+    	}
+    	for(Piece piece: pieces) {
+    		piece.moveToStart();
+    	}
+    }
 }

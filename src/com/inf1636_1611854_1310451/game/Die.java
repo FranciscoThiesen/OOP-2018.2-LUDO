@@ -17,7 +17,7 @@ public class Die implements Savable {
 
 	public Die() {
 		this._hasBeenUsed = true;
-		this.value = 1;
+		this.value = 0;
 		this.rng = new Random();
 		this.onStateChange = new Subject<>();
 	}
@@ -28,6 +28,10 @@ public class Die implements Savable {
 		obj.put("value", this.value);
 		obj.put("_hasBeenUsed", this._hasBeenUsed);
 		return obj;
+	}
+	
+	public void reset() {
+		this.value = 0;
 	}
 	
 	public void loadStateFromJSON(JSONObject obj) {
