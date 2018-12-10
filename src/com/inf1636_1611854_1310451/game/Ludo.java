@@ -299,7 +299,7 @@ public class Ludo implements Savable {
 				if(!hasMoveOutsideSanctuary) {
 					this.executeMove(allPossibleMoves.get(0));
 				}
-				if(!hasMoveOutsideSanctuary) {
+				if(!hasMoveOutsideBarrier) {
 					this.executeMove(allPossibleMoves.get(0));
 				}
 			}
